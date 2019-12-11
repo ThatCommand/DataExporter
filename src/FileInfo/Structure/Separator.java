@@ -18,7 +18,7 @@ public class Separator extends Symbol implements StructureObject {
      */
     public final static char ESCAPE_CHAR = '';
     /**
-     * Carattere "&#127;" DEL
+     * Character "&#127;" DEL
      */
     public final static char DEL_CHAR = (char) 127;
 
