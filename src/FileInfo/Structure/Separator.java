@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class Separator extends Symbol implements StructureObject {
 

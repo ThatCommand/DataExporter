@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public interface StructureObject {
 
@@ -66,6 +66,8 @@ public interface StructureObject {
      * Se si tratta di un carattere speciale o un insieme di tali allora dever
      * ritornare TRUE
      *
+     * If it's a special char or a group of chars then it needs to return TRUE
+     *
      * @return
      */
     public boolean isStructureSpecialChar();
@@ -73,13 +75,17 @@ public interface StructureObject {
     /**
      * Aggiungi un sott'oggetto
      *
-     * @param so
+     * Add a sub-object
+     *
+     * @param so the StructureObject to add
      * @return
      */
     public StructureObject addStructureObject(StructureObject so);
 
     /**
      * Rimuovi un sott'oggetto
+     *
+     * Remove a sub-object
      *
      * @param so
      * @return
@@ -89,12 +95,16 @@ public interface StructureObject {
     /**
      * Restituisce il pattern secondo il quale è costruito il blocco.
      *
+     * Return the pattern on which the block is built on.
+     *
      * @return
      */
     public Pattern getPattern();
 
     /**
      * Imposta il pattern del blocco
+     *
+     * Set the block's pattern
      *
      * @param p
      */
@@ -103,6 +113,9 @@ public interface StructureObject {
     /**
      * Serve per le classi "sovrane" (quelle che chiamano/usano l'oggetto) per
      * sapere se la struttura dell'oggetto è stata rispettata.
+     *
+     * This method returns TRUE if the structure of the block object it's
+     * correct (matches the pattern,completation of the object-variables,...)
      *
      * @return
      */

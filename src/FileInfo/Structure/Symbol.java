@@ -37,6 +37,8 @@ public class Symbol {
      * <li>NAK = dichiarazione del dato di tipo Object</li>
      *
      * </ul>
+     * <p>
+     * Custom char -- needed to define objects (String, Date, Long, Integer,...)
      */
     public final static char DLE = (char) 020;//Definizione oggetto
 
@@ -51,30 +53,52 @@ public class Symbol {
      * <P>
      * Queste definizioni sono composte sempre dal carattere {@link #SYN SYN}
      * più il loro simbolo base.
+     *
+     * <p>
+     * Custom char -- needed to define basic variables
+     * (int,double,char,long,...)
      */
     public final static char SYN = (char) 026;
     /**
      * Definizione base di una variabile "int"
+     *
+     * <p>
+     * Base definition of "int"
      */
     public final static char DC1 = (char) 021;//int -- se in un oggetto il significato è: corto
     /**
      * Definizione base di una variabile "double"
+     *
+     * <p>
+     * Base definition of "double"
      */
     public final static char DC2 = (char) 022;//double  -- se in un oggetto il significato è: lungo
     /**
      * Definizione base di una variabile "boolean"
+     *
+     * <p>
+     * Base definition of "boolean"
      */
     public final static char DC3 = (char) 023;//boolean -- se in un oggetto il significato è: può avere diversi tipi 
     /**
      * Definizione base di una variabile "float"
+     *
+     * <p>
+     * Base definition of "float"
      */
     public final static char DC4 = (char) 024;//float  -- se in un oggetto il significato è: variabile lunga
     /**
      * Definizione della variabile a tipo "Object"
+     *
+     * <p>
+     * Definition of "Object"
      */
     public final static char NAK = (char) 025;//Oggetto  -- se in un oggetto il significato è: sott'oggetto
     /**
      * Nullo
+     *
+     * <p>
+     * Null
      */
     public final static char NUL = (char) 000;//  -- se in un oggetto il significato è: non prosegue la definizione (nel caso siano stati usati abbastanza caratteri per dare una definizione al dato)
 
@@ -83,28 +107,46 @@ public class Symbol {
      * variabili, ad esempio "\n" o "\r" o "\t" possono essere sostituiti per
      * evitare errori di lettura del dato e abilitare il salvataggio
      * human-readable (con ritorni a campo)
+     *
+     * <p>
+     * Custom char -- needed to define some special chars
      */
     public final static char ETX = (char) 003;
     /**
      * Simbolo "&#172;" che rappresenta il "\r" o "\n" o "\t" se posto alla fine
      * del codice di rappresentazione.
+     *
+     * <p>
+     * Symbol "&#172;" which represent "\r" or "\n" or "\t"
      */
     public final static char RETURN_SYMBOL = (char) 172;
     /**
      * Rappresenta "\n"
+     *
+     * <p>
+     * Represent "\n"
      */
     public final static String SLASH_N = "" + ETX + DC4 + DC3 + DC1 + RETURN_SYMBOL;
     /**
      * Rappresenta "\r"
+     *
+     * <p>
+     * Represent "\r"
      */
     public final static String SLASH_R = "" + ETX + DC4 + DC3 + DC2 + RETURN_SYMBOL;
     /**
      * Rappresenta "\t"
+     *
+     * <p>
+     * Represent "\t"
      */
     public final static String SLASH_T = "" + ETX + DC4 + DC3 + DC3 + RETURN_SYMBOL;
     /**
      * Definizione di tipo oggetto Stringa<p>
      * {@link #NAK NAK} +{@link #DC3 DC3}+{@link #DC2 DC2}+{@link #DC4 DC4}
+     *
+     * <p>
+     * Represent String obj
      */
     public final static String DATA_STRING = "" + NAK + DC3 + DC2 + DC4;
     /**

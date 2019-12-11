@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class Reader {
 
