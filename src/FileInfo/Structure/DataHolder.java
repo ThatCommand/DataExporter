@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * IT<p>
  * Data Holder<p>
  * per salvare dichiarare in ordine:
  * <br> {@link FileInfo.Structure.DataHolder#setVariableName}
@@ -19,8 +20,18 @@ import java.util.regex.Pattern;
  * {@link #setData}
  * <p>
  * Per richiedere il valore basta chiamare il metodo {@link #getData}
+ * <p>
+ * EN<p>
+ * Data Holder<p>
+ * to save declare in order:
+ * <br> {@link FileInfo.Structure.DataHolder#setVariableName}
+ * <br> {@link #setAssignSymbol}
+ * <br> {@link #setSeparator} (nel caso si voglia salvare più di un valore)<br>
+ * {@link #setData}
+ * <p>
+ * To get the fianl value call the method {@link #getData}
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class DataHolder implements StructureObject {
 
@@ -45,7 +56,11 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Oggetto che può essere salvato sottoforma di dato scritto
+     * <p>
+     * EN<p>
+     * Object that can be saved in text format
      */
     public DataHolder() {
         last_automated_assigned_name++;
@@ -176,7 +191,11 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Non viene usato
+     * <p>
+     * EN<p>
+     * Useless here
      *
      * @param so
      * @return
@@ -187,7 +206,11 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Non viene usato
+     * <p>
+     * EN<p>
+     * Useless here
      *
      * @param so
      * @return
@@ -200,7 +223,11 @@ public class DataHolder implements StructureObject {
     boolean acceptable = true;
 
     /**
+     * IT<p>
      * Imposta il nome della variabile
+     * <p>
+     * EN<p>
+     * Set the variable name
      *
      * @param name
      * @return
@@ -219,9 +246,15 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Imposta i valori della variabile, nel caso di multipli valori ricordarsi
      * di impostare un valore tramite il metodo {@link setSeparator} altrimenti
      * tutti i valori tranne il primo nella lista verranno ignorati.
+     * <p>
+     * EN<p>
+     * Set the variable values, in case of multiple values it is necessary to
+     * set the separator trought te method {@link #setSeparator} otherwise all
+     * the values after the first are ignored.
      *
      * @param values
      * @return
@@ -232,11 +265,19 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Simbolo che serve per dichiarare i valori:
      * <p>
      * es.<br>
      * nome_var (simbolo di assegnazione) valori<br>
      * nome = valore
+     * <p>
+     * EN<p>
+     * Symbol which declares the initialization of the values:
+     * <p>
+     * eg.<br>
+     * var_name (assign symbol) values<br>
+     * name = value
      *
      * @param assign_simbol
      * @return
@@ -251,8 +292,13 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Se != da null allora questo oggetto DataHolder viene considerato con
      * un'array di dati assegnati
+     * <p>
+     * EN<p>
+     * If its not null then this object is considered as an'array of differnet
+     * objects
      *
      * @param multiple_data_holding
      * @return
@@ -317,7 +363,15 @@ public class DataHolder implements StructureObject {
     }
 
     /**
+     * IT<p>
      * Legge una stringa dopo avere impostato i parametri a quest'oggetto:<br>
+     * {@link #setPattern(java.util.regex.Pattern) setPattern}<br>
+     * {@link #setAssignSymbol(FileInfo.Structure.Symbol) setAssignSymbol}<br>
+     * e nel caso ci siano più valori:
+     * {@link #setSeparator(FileInfo.Structure.Separator) setSeparator}
+     * <p>
+     * EN<p>
+     * Read a string after this parameters have been setted:<br>
      * {@link #setPattern(java.util.regex.Pattern) setPattern}<br>
      * {@link #setAssignSymbol(FileInfo.Structure.Symbol) setAssignSymbol}<br>
      * e nel caso ci siano più valori:

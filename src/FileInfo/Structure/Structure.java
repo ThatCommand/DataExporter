@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class Structure implements ContainerObject {
 
@@ -33,7 +33,11 @@ public class Structure implements ContainerObject {
     }
 
     /**
+     * IT<p>
      * Aggiunge un nuovo gruppo alla struttura
+     * <p>
+     * EN<p>
+     * Add new ContainerGroup to this structure
      *
      * @return
      */

@@ -7,15 +7,16 @@ package FileInfo;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class Encoding {
 
     public static enum ENCODINGS {
-        UTF_8,UTF_16,UTF_32;
-        
-        public String getData(){
-            String name=this.name().replaceAll("_", "-");
+
+        UTF_8, UTF_16, UTF_32;
+
+        public String getData() {
+            String name = this.name().replaceAll("_", "-");
             return name;
         }
     };

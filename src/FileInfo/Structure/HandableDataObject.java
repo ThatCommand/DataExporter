@@ -7,12 +7,16 @@ package FileInfo.Structure;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public interface HandableDataObject {
 
     /**
+     * IT<p>
      * Deve ristituire l'oggetto in formato di stringa salvabile
+     * <p>
+     * EN<p>
+     * Returns the object in savable string
      *
      * @return
      */

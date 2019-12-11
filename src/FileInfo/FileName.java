@@ -7,7 +7,7 @@ package FileInfo;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class FileName {
 

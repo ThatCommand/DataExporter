@@ -6,17 +6,28 @@
 package FileInfo.Structure;
 
 /**
- * Controlla {@linkplain Testo https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
- * }
+ * IT<p>
+ * Controlla
+ * {@link Testo https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/}
+ * <p>
+ * EN<p>
  *
- * @author gabri
+ * Check {@link Text https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
+ * }
+ * @
+ *
+ *
+ *
+ * author ThatCommand
  */
 public interface ContainerObject {
 
     /**
+     * IT<p>
      * Ritorna il separatore della struttura/gruppo, il separatore viene
      * utilizzato per dividere i sottogruppi e valori
-     *
+     * <p>
+     * EN<p>
      * Return the separetor of the structure/group, the separator is used to
      * split sub-objects and values
      *
@@ -27,8 +38,10 @@ public interface ContainerObject {
     public <T> T defineSeparator(Separator sep);
 
     /**
+     * IT<p>
      * Definisce il simbolo di apertura del gruppo
-     *
+     * <p>
+     * EN<p>
      * Define the symbol of the group opening
      *
      * @param <R>
@@ -38,8 +51,10 @@ public interface ContainerObject {
     public <R> R defineSymbolOpenGroup(Symbol sym);
 
     /**
+     * IT<p>
      * Definisce il simbolo di chiusura del gruppo
-     *
+     * <p>
+     * EN<p>
      * Define the symbol of the group closing
      *
      * @param <R>
@@ -49,8 +64,10 @@ public interface ContainerObject {
     public <R> R defineSymbolCloseGroup(Symbol sym);
 
     /**
+     * IT<p>
      * Definisce il simbolo di apertura e chiusura del gruppo
-     *
+     * <p>
+     * EN<p>
      * Define the symbol of the group opening and closing
      *
      * @param <R>

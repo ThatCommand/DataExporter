@@ -32,7 +32,7 @@ import writer.Writer;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class RunTests {
     

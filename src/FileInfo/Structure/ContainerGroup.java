@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author gabri
+ * @author ThatCommand
  */
 public class ContainerGroup implements StructureObject, ContainerObject {
 
@@ -31,8 +31,12 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     public static int lastnumbernamegroup = 0;
 
     /**
+     * IT<p>
      * Oggetto che permette di contenere altri sotto-gruppi e/o assegnazione di
      * dati.
+     * <p>
+     * EN<p>
+     * Object that can contain other sub-objects and/or variables
      */
     public ContainerGroup() {
         setGroupName("DATA_GROUP_" + lastnumbernamegroup);
@@ -71,7 +75,11 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     boolean acceptable = true;
 
     /**
+     * IT<p>
      * Imposta il nome del gruppo
+     * <p>
+     * EN<p>
+     * Set group's name
      *
      * @param name
      * @return
