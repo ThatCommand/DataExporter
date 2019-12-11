@@ -17,12 +17,17 @@ public interface StructureObject {
      * Restituisce la stringa formata dal template in cui si vanno a rimpiazzare
      * i valori
      *
+     *
+     * Return the template string completed with the values
+     *
      * @return
      */
     public String getData();
 
     /**
      * Restituisce la stringa del template dell'oggetto
+     *
+     * Return the object's template string
      *
      * @return
      */
@@ -31,13 +36,16 @@ public interface StructureObject {
     /**
      * Genera la stringa del template dell'oggetto
      *
-     * @return
+     * Generate the template string of the object
      */
     public void genStringTemplate();
 
     /**
      * Se si tratta di un oggetto di tipo container (che contiene altri
      * sott'oggetti) allora deve ritornare TRUE
+     *
+     * If it's a container object (which contains other sub-objects) then it
+     * needs to return TRUE
      *
      * @return
      */
@@ -46,6 +54,9 @@ public interface StructureObject {
     /**
      * Se si tratta di un oggetto di tipo DataHolder (Che indica un valore con
      * il rispettivo nome dell' oggetto) allora deve ritornare TRUE
+     *
+     * If it's a DataHolder object (which contains variables defined by a name)
+     * then it needs to return TRUE
      *
      * @return
      */
