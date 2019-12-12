@@ -238,7 +238,20 @@ public class ContainerGroup implements StructureObject, ContainerObject {
                 setGroupName(matcher.group(1));
             }
             if (internal_datas != null && internal_datas.size() > 0) {
-
+                for (int i = 0; i < internal_datas.size(); i++) {
+                    String datar = internal_datas.get(i);
+                    Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "(.*?)#");
+                    Matcher matcher_2 = pattern_2.matcher(datar);
+                    if (matcher_2.find()) {
+                        String block_name = matcher_2.group(1);
+                        switch (block_name) {
+                            case "CG":
+                                break;
+                            case "DH":
+                                break;
+                        }
+                    }
+                }
             }
         }
         return this;
