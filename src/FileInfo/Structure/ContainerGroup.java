@@ -245,6 +245,9 @@ public class ContainerGroup implements StructureObject, ContainerObject {
                         String block_name = matcher_2.group(1);
                         switch (block_name) {
                             case "CG":
+                                ContainerGroup cg=new ContainerGroup();
+                                cg
+                                        .readData(datar);
                                 break;
                             case "DH":
                                 break;

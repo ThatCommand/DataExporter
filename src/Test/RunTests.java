@@ -35,37 +35,37 @@ import writer.Writer;
  * @author ThatCommand
  */
 public class RunTests {
-    
+
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES";
-    
+
     public void encrypt(String key, File inputFile, File outputFile)
             throws CryptoException {
         doCrypto(Cipher.ENCRYPT_MODE, key, inputFile, outputFile);
     }
-    
+
     public void decrypt(String key, File inputFile, File outputFile)
             throws CryptoException {
         doCrypto(Cipher.DECRYPT_MODE, key, inputFile, outputFile);
     }
-    
+
     public class CryptoException extends Exception {
-        
+
         public CryptoException() {
         }
-        
+
         public CryptoException(String message, Throwable throwable) {
             super(message, throwable);
         }
     }
-    
+
     public void doCrypto(int cipherMode, String key, File inputFile,
             File outputFile) throws CryptoException {
         try {
             Key secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(cipherMode, secretKey);
-            
+
             FileOutputStream outputStream;
             try (FileInputStream inputStream = new FileInputStream(inputFile)) {
                 byte[] inputBytes = new byte[(int) inputFile.length()];
@@ -75,7 +75,7 @@ public class RunTests {
                 outputStream.write(outputBytes);
             }
             outputStream.close();
-            
+
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | IOException ex) {
             throw new CryptoException("Error encrypting/decrypting file", ex);
         } catch (java.security.InvalidKeyException ex) {
@@ -134,9 +134,9 @@ public class RunTests {
         File f
                 = w
                 .setEncoding(Encoding.ENCODINGS.UTF_16)
-                .setFilename(new FileName("esempio"))
+                .setFilename(new FileName("Example"))
                 .setText(cg.getData())
-                .setExtension(new Extension("esempio di scrittura file"))
+                .setExtension(new Extension("Writing exemple file"))
                 .setDestination("C:\\Users\\gabri\\Desktop\\").write();
 //            RunTests rt=new RunTests();
 //            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
@@ -145,13 +145,13 @@ public class RunTests {
         Reader r = new Reader();
         r
                 .setEncoding(Encoding.ENCODINGS.UTF_16).
-                setFilename(new FileName("esempio"))
-                .setExtension(new Extension("esempio di scrittura file"))
+                setFilename(new FileName("Example"))
+                .setExtension(new Extension("Writing exemple file"))
                 .setDestination("C:\\Users\\gabri\\Desktop\\").read();
-        
+
         ArrayList<String> asr = cg.parseData(r.getText());
         asr.forEach(a -> System.out.println(a));
-        
+
 //        DataHolder nest = new DataHolder();
 //        nest
 //                .setAssignSymbol(new Symbol(':'))
@@ -159,11 +159,10 @@ public class RunTests {
 //                .setPattern(dh.getPattern());
 //        
 //        nest.readData(r.getText());
-        
         System.out.println("PATTERN GROUP:\t" + cg.getPattern().toString());
 //        System.out.println("DH:\t" + dh.getData());
 //        System.out.println("NEST:\t" + nest.getData());
 //        System.out.println(nest.toString());
     }
-    
+
 }
