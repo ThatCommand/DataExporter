@@ -46,6 +46,7 @@ public class DataHolder implements StructureObject {
     private final static String tmp_VarName = "DataHolder_VARNAME";
     private final static String tmp_MultipleVar = "DataHolder_MULTIPLEVAR";
     private final static String tmp_SingleVar = "DataHolder_VAR";
+    private static String hash = "";
 
     public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "DH#INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
 
@@ -53,6 +54,7 @@ public class DataHolder implements StructureObject {
 
     public DataHolder(String holder_name) {
         name = holder_name.replaceAll("\n", Symbol.SLASH_N);
+        gen_hash();
     }
 
     /**
@@ -65,6 +67,11 @@ public class DataHolder implements StructureObject {
     public DataHolder() {
         last_automated_assigned_name++;
         name = "DataHolder_" + last_automated_assigned_name;
+        gen_hash();
+    }
+
+    private void gen_hash() {
+        hash = this.hashCode() + name.length() + name.hashCode() + name.trim();
     }
 
     @Override
@@ -484,5 +491,11 @@ public class DataHolder implements StructureObject {
             text_to_out += "\n\t" + stored_data1 + "\t- " + stored_data1.getClass();
         }
         return text_to_out;
+    }
+
+    public String getDataSettings() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("#DEFINE:").append("[HASH:").append(hash).append("]");
+        return null;
     }
 }
