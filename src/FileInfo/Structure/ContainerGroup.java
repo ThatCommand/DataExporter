@@ -19,15 +19,16 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     StringBuilder FormattedData = new StringBuilder();
     ArrayList<StructureObject> sos = new ArrayList<>();
 
-    Separator sep;
+    Separator sep = new Separator(';');
     Symbol open_char = new Symbol('[');
     Symbol close_char = new Symbol(']');
     String group_name;
 
     private final static String tmp_VarName = "ContainerGroup_VARNAME";
     private final static String tmp_Holdable = "ContainerGroup_HOLDABLE";
+    private static StringBuilder hash = new StringBuilder();
 
-    public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "CG#INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
+    public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "CG#DH?INSERT_HASH_HERE?INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
     public static int lastnumbernamegroup = 0;
 
     /**
@@ -45,6 +46,16 @@ public class ContainerGroup implements StructureObject, ContainerObject {
 
     public ContainerGroup(String groupName) {
         setGroupName(groupName);
+    }
+
+    private void gen_hash() {
+        hash
+                .append(group_name.charAt(0))
+                .append(Integer.toHexString((int) open_char.getSymbol()))
+                .append(Integer.toHexString((int) close_char.getSymbol()))
+                .append(Integer.toHexString((int) sep.getSymbol()))
+                .append(group_name.length())
+                .append(group_name.getBytes());
     }
 
     @Override
@@ -154,7 +165,7 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     @Override
     public String getStringTemplate() {
         genStringTemplate();
-        return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString());
+        return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString()).replaceAll("INSERT_HASH_HERE", hash.toString());
     }
 
     @Override
@@ -199,7 +210,9 @@ public class ContainerGroup implements StructureObject, ContainerObject {
                 .append(Symbol.OPEN_BLOCK)
                 .append("[^")
                 .append(Symbol.CLOSE_BLOCK)
-                .append("]{2}#")
+                .append("]{2}#HC\\?([^")
+                .append(Symbol.CLOSE_BLOCK)
+                .append("]*)\\?")
                 .append(Symbol.STRING_DEFINITION)
                 .append("([^")
                 .append(Symbol.CLOSE_BLOCK)
@@ -231,7 +244,11 @@ public class ContainerGroup implements StructureObject, ContainerObject {
 
     public ContainerGroup readData(String data) {
         if (data != null && data.matches(p.pattern())) {
-            Pattern pattern = Pattern.compile(Symbol.OPEN_BLOCK + "CG#\"(.*?)\"");
+            Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
+                    + "CG#HC\\?([^"
+                    + Symbol.CLOSE_BLOCK
+                    + "]*)\\?");
+            Pattern pattern = Pattern.compile("\\?\"(.*?)\"");
             Matcher matcher = pattern.matcher(data);
             ArrayList<String> internal_datas = parseData(data);
             if (matcher.find()) {//nome variabile
@@ -245,7 +262,7 @@ public class ContainerGroup implements StructureObject, ContainerObject {
                         String block_name = matcher_2.group(1);
                         switch (block_name) {
                             case "CG":
-                                ContainerGroup cg=new ContainerGroup();
+                                ContainerGroup cg = new ContainerGroup();
                                 cg
                                         .readData(datar);
                                 break;
@@ -329,5 +346,24 @@ public class ContainerGroup implements StructureObject, ContainerObject {
             }
         }
         return null;
+    }
+
+    public String getDataSettings() {
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append("#DEFINE:")
+                .append("[HASH:")
+                .append(hash.toString())
+                .append("]")
+                .append(";[SEPARATOR:")
+                .append(sep != null ? sep.getData() : Symbol.NUL)
+                .append("]")
+                .append(";[OPEN:")
+                .append(open_char.getSymbol())
+                .append("];[CLOSE:")
+                .append(close_char.getSymbol())
+                .append("] AS CG")
+                .append(Symbol.CLOSE_BLOCK);
+        return sb.toString();
     }
 }
