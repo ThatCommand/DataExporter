@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * @author ThatCommand
  */
 public class DataHolder implements StructureObject {
-
+    
     Object[] stored_data;
     String name;
     StringBuilder FormattedData = new StringBuilder();
@@ -42,16 +42,16 @@ public class DataHolder implements StructureObject {
     Symbol open_data_container = new Symbol('(');
     Symbol close_data_container = new Symbol(')');
     Separator multiple_separator;
-
+    
     private final static String tmp_VarName = "DataHolder_VARNAME";
     private final static String tmp_MultipleVar = "DataHolder_MULTIPLEVAR";
     private final static String tmp_SingleVar = "DataHolder_VAR";
     private static StringBuilder hash = new StringBuilder();
-
+    
     public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "DH#INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
-
+    
     public static int last_automated_assigned_name = 0;
-
+    
     public DataHolder(String holder_name) {
         name = holder_name.replaceAll("\n", Symbol.SLASH_N);
         gen_hash();
@@ -69,7 +69,7 @@ public class DataHolder implements StructureObject {
         name = "DataHolder_" + last_automated_assigned_name;
         gen_hash();
     }
-
+    
     private void gen_hash() {
         hash
                 .append(name.charAt(0))
@@ -78,7 +78,7 @@ public class DataHolder implements StructureObject {
                 .append(name.length())
                 .append(name.getBytes());
     }
-
+    
     @Override
     public String getData() {
         checkStatus();
@@ -165,13 +165,13 @@ public class DataHolder implements StructureObject {
         }
         return null;
     }
-
+    
     @Override
     public String getStringTemplate() {
         genStringTemplate();
         return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString());
     }
-
+    
     @Override
     public void genStringTemplate() {
         checkStatus();
@@ -186,17 +186,17 @@ public class DataHolder implements StructureObject {
             FormattedData.append((multiple_separator != null ? close_data_container.getSymbol() : ""));
         }
     }
-
+    
     @Override
     public boolean isContainer() {
         return false;
     }
-
+    
     @Override
     public boolean isDataHolder() {
         return true;
     }
-
+    
     @Override
     public boolean isStructureSpecialChar() {
         return false;
@@ -231,7 +231,7 @@ public class DataHolder implements StructureObject {
     public StructureObject removeStructureObject(StructureObject so) {
         return this;
     }
-
+    
     boolean acceptable = true;
 
     /**
@@ -323,7 +323,7 @@ public class DataHolder implements StructureObject {
         }
         return this;
     }
-
+    
     public DataHolder checkStatus() {
         if (!acceptable) {
             acceptable = true;
@@ -341,13 +341,13 @@ public class DataHolder implements StructureObject {
         }
         return this;
     }
-
+    
     @Override
     public boolean isAcceptable() {
         checkStatus();
         return acceptable;
     }
-
+    
     @Override
     public Pattern getPattern() {
         p = Pattern.compile(Symbol.OPEN_BLOCK
@@ -366,9 +366,9 @@ public class DataHolder implements StructureObject {
                 + Symbol.CLOSE_BLOCK);
         return p;
     }
-
+    
     Pattern p;
-
+    
     @Override
     public void setPattern(Pattern p) {
         this.p = p;
@@ -488,7 +488,7 @@ public class DataHolder implements StructureObject {
         }
         return this;
     }
-
+    
     @Override
     public String toString() {
         String text_to_out = name + ":";
@@ -497,10 +497,20 @@ public class DataHolder implements StructureObject {
         }
         return text_to_out;
     }
-
+    
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();
-        sb.append("#DEFINE:").append("[HASH:").append(hash.toString()).append("]");
+        sb
+                .append("#DEFINE:")
+                .append("[HASH:")
+                .append(hash.toString())
+                .append("]")
+                .append(";[SEPARATOR:")
+                .append(multiple_separator != null ? multiple_separator.getData() : Symbol.NUL)
+                .append("]")
+                .append(";[ASSIGN:")
+                .append(assign_symb.getSymbol())
+                .append("]").append(Symbol.CLOSE_BLOCK);
         return null;
     }
 }
