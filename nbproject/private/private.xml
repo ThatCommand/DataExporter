@@ -3,19 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/Symbol.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/StructureObject.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/HandableDataObject.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/DataHolder.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/FileName.java</file>
             <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/Separator.java</file>
             <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/ContainerGroup.java</file>
             <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/Structure.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Encoding.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Extension.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/reader/Reader.java</file>
+            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/DataHolder.java</file>
             <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/Test/RunTests.java</file>
-            <file>file:/C:/Users/gabri/Documents/NetBeansProjects/DataExporter/src/FileInfo/Structure/ContainerObject.java</file>
         </group>
     </open-files>
 </project-private>

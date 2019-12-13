@@ -46,7 +46,7 @@ public class DataHolder implements StructureObject {
     private final static String tmp_VarName = "DataHolder_VARNAME";
     private final static String tmp_MultipleVar = "DataHolder_MULTIPLEVAR";
     private final static String tmp_SingleVar = "DataHolder_VAR";
-    private static String hash = "";
+    private static StringBuilder hash = new StringBuilder();
 
     public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "DH#INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
 
@@ -71,7 +71,12 @@ public class DataHolder implements StructureObject {
     }
 
     private void gen_hash() {
-        hash = this.hashCode() + name.length() + name.hashCode() + name.trim();
+        hash
+                .append(name.charAt(0))
+                .append(Integer.toHexString((int) open_data_container.getSymbol()))
+                .append(Integer.toHexString((int) close_data_container.getSymbol()))
+                .append(name.length())
+                .append(name.getBytes());
     }
 
     @Override
@@ -495,7 +500,7 @@ public class DataHolder implements StructureObject {
 
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();
-        sb.append("#DEFINE:").append("[HASH:").append(hash).append("]");
+        sb.append("#DEFINE:").append("[HASH:").append(hash.toString()).append("]");
         return null;
     }
 }
