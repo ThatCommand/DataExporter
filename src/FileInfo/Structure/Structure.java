@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleBooleanProperty;
  *
  * @author ThatCommand
  */
-public class Structure implements ContainerObject {
+public class Structure implements ContainerObject, DataSettings {
 
     BooleanProperty building = new SimpleBooleanProperty(false);
 
@@ -29,6 +29,16 @@ public class Structure implements ContainerObject {
 
     public Structure buildStructure() {
         building.setValue(Boolean.TRUE);
+        return this;
+    }
+
+    public Structure addStructureObject(StructureObject obj) {
+        structure.add(obj);
+        return this;
+    }
+
+    public Structure removeStructureObject(StructureObject obj) {
+        structure.remove(obj);
         return this;
     }
 
@@ -86,4 +96,42 @@ public class Structure implements ContainerObject {
         return close_char;
     }
 
+    public String getStructure() {
+        StringBuilder sbs = new StringBuilder();
+        structure.forEach(so -> {
+            sbs.append(so.getData());
+        });
+        sbs.append(getDataSettings());
+        return sbs.toString();
+    }
+
+    ArrayList<String> dt_strs = new ArrayList<>();
+
+    public void getDataSettings(Object o) {
+        if (o instanceof DataSettings) {
+            DataSettings so = (DataSettings) o;
+            dt_strs.add(so.getDataSettings());
+            if (o instanceof ContainerObject) {
+                ContainerObject cgg = (ContainerObject) so;
+                cgg.getObjects().forEach(obj -> {
+                    getDataSettings(obj);
+                });
+            }
+        }
+    }
+
+    @Override
+    public String getDataSettings() {
+        StringBuilder sb = new StringBuilder("\n\n");
+        this.structure.forEach(strct -> {
+            getDataSettings(strct);
+        });
+        dt_strs.forEach(ds -> sb.append(ds).append("\n"));
+        return sb.toString();
+    }
+
+    @Override
+    public ArrayList<StructureObject> getObjects() {
+        return structure;
+    }
 }

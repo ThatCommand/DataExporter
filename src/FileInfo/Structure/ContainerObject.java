@@ -5,6 +5,9 @@
  */
 package FileInfo.Structure;
 
+import java.util.ArrayList;
+import javafx.scene.text.Text;
+
 /**
  * IT<p>
  * Controlla
@@ -77,4 +80,6 @@ public interface ContainerObject {
      */
     public <R> R defineSymbolGroup(Symbol open, Symbol close);
 
+    
+    public ArrayList<StructureObject> getObjects();
 }

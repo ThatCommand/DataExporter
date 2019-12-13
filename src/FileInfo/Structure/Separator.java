@@ -103,4 +103,5 @@ public class Separator extends Symbol implements StructureObject {
         return acceptable;
     }
 
+
 }

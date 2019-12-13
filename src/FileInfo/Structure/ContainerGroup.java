@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @author ThatCommand
  */
-public class ContainerGroup implements StructureObject, ContainerObject {
+public class ContainerGroup implements StructureObject, ContainerObject, DataSettings {
 
     StringBuilder FormattedData = new StringBuilder();
     ArrayList<StructureObject> sos = new ArrayList<>();
@@ -26,7 +26,7 @@ public class ContainerGroup implements StructureObject, ContainerObject {
 
     private final static String tmp_VarName = "ContainerGroup_VARNAME";
     private final static String tmp_Holdable = "ContainerGroup_HOLDABLE";
-    private static StringBuilder hash = new StringBuilder();
+    private StringBuilder hash = new StringBuilder();
 
     public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "CG#DH?INSERT_HASH_HERE?INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
     public static int lastnumbernamegroup = 0;
@@ -42,10 +42,12 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     public ContainerGroup() {
         setGroupName("DATA_GROUP_" + lastnumbernamegroup);
         lastnumbernamegroup++;
+        gen_hash();
     }
 
     public ContainerGroup(String groupName) {
         setGroupName(groupName);
+        gen_hash();
     }
 
     private void gen_hash() {
@@ -165,6 +167,7 @@ public class ContainerGroup implements StructureObject, ContainerObject {
     @Override
     public String getStringTemplate() {
         genStringTemplate();
+        gen_hash();
         return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString()).replaceAll("INSERT_HASH_HERE", hash.toString());
     }
 
@@ -348,6 +351,7 @@ public class ContainerGroup implements StructureObject, ContainerObject {
         return null;
     }
 
+    @Override
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();
         sb
@@ -366,4 +370,10 @@ public class ContainerGroup implements StructureObject, ContainerObject {
                 .append(Symbol.CLOSE_BLOCK);
         return sb.toString();
     }
+
+    @Override
+    public ArrayList<StructureObject> getObjects() {
+        return sos;
+    }
+
 }

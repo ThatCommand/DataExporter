@@ -11,6 +11,7 @@ import FileInfo.FileName;
 import FileInfo.Structure.ContainerGroup;
 import FileInfo.Structure.DataHolder;
 import FileInfo.Structure.Separator;
+import FileInfo.Structure.Structure;
 import FileInfo.Structure.Symbol;
 import java.io.File;
 import java.io.FileInputStream;
@@ -130,27 +131,30 @@ public class RunTests {
                 .addStructureObject(dh2)
                 .addStructureObject(cg2)
                 .addStructureObject(dh4);
+        Structure s = new Structure();
+        s.addStructureObject(cg);
+
         Writer w = new Writer();
         File f
                 = w
                 .setEncoding(Encoding.ENCODINGS.UTF_16)
                 .setFilename(new FileName("Example"))
-                .setText(cg.getData())
+                .setText(s.getStructure())
                 .setExtension(new Extension("Writing exemple file"))
                 .setDestination("C:\\Users\\gabri\\Desktop\\").write();
 //            RunTests rt=new RunTests();
 //            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
 //            rt.decrypt("BAZZUORD90123456", new File(f.getAbsolutePath()+".encp"),new File(f.getAbsolutePath()+".decp"));
 
-        Reader r = new Reader();
-        r
-                .setEncoding(Encoding.ENCODINGS.UTF_16).
-                setFilename(new FileName("Example"))
-                .setExtension(new Extension("Writing exemple file"))
-                .setDestination("C:\\Users\\gabri\\Desktop\\").read();
-
-        ArrayList<String> asr = cg.parseData(r.getText());
-        asr.forEach(a -> System.out.println(a));
+//        Reader r = new Reader();
+//        r
+//                .setEncoding(Encoding.ENCODINGS.UTF_16).
+//                setFilename(new FileName("Example"))
+//                .setExtension(new Extension("Writing exemple file"))
+//                .setDestination("C:\\Users\\gabri\\Desktop\\").read();
+//
+//        ArrayList<String> asr = cg.parseData(r.getText());
+//        asr.forEach(a -> System.out.println(a));
 
 //        DataHolder nest = new DataHolder();
 //        nest
