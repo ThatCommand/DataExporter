@@ -8,6 +8,7 @@ package reader;
 import FileInfo.Encoding;
 import FileInfo.Extension;
 import FileInfo.FileName;
+import FileInfo.Structure.Symbol;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +30,8 @@ public class Reader {
 
     File selectedFile = null;
     String text = "";
-
+    StringBuilder defs = new StringBuilder();
+    StringBuilder file = new StringBuilder();
     boolean error = false;
 
     public Reader() {
@@ -65,6 +67,14 @@ public class Reader {
         return text.replaceAll("\n|\t|\r", "");
     }
 
+    public String getFile() {
+        return file.toString().replaceAll("\n|\t|\r", "");
+    }
+
+    public String getDefs() {
+        return defs.toString();
+    }
+
     public File read() {
         BufferedReader fr;
         if (destination != null) {
@@ -72,9 +82,21 @@ public class Reader {
             try {
                 fr = new BufferedReader(new InputStreamReader(new FileInputStream(selectedFile), enc.getData()));
                 String line;
+                boolean is_definition = false;
                 while ((line = fr.readLine()) != null) {
-                    text += line;
+                    if (!line.trim().replaceAll("\n|\r|\t", "").equals("")) {
+                        if (!is_definition) {
+                            if (!line.equals(Symbol.DEFINITION_START.replaceAll("\n", ""))) {
+                                file.append(line).append("\n");
+                            } else {
+                                is_definition = true;
+                            }
+                        } else {
+                            defs.append(line).append("\n");
+                        }
+                    }
                 }
+
             } catch (FileNotFoundException | UnsupportedEncodingException ex) {
                 ErrorThrown(ex.getMessage());
             } catch (IOException ex) {

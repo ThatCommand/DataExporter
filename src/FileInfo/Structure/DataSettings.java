@@ -10,7 +10,12 @@ package FileInfo.Structure;
  * @author gabri
  */
 public interface DataSettings {
+
+    public String getHash();
+
+    void gen_Hash();
     
-    
+    public boolean checkHash(String hash);
+
     public String getDataSettings();
 }

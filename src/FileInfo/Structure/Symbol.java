@@ -24,6 +24,12 @@ public class Symbol {
     public final static char STRING_DEFINITION = '"';
     public final static char OPEN_BLOCK = (char) 001;
     public final static char CLOSE_BLOCK = (char) 004;
+
+    public final static char GS = (char) 035;
+    public final static char RS = (char) 036;
+    public final static char US = (char) 037;
+
+    public final static String DEFINITION_START = "DEF_S" + GS + US + RS + "\n";
     /**
      * IT<p>
      * Inizia la definizione dl tipo di dato del tipo oggetto:<br>

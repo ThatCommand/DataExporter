@@ -101,6 +101,7 @@ public class Structure implements ContainerObject, DataSettings {
         structure.forEach(so -> {
             sbs.append(so.getData());
         });
+        sbs.append("\n").append(Symbol.DEFINITION_START);
         sbs.append(getDataSettings());
         return sbs.toString();
     }
@@ -122,7 +123,7 @@ public class Structure implements ContainerObject, DataSettings {
 
     @Override
     public String getDataSettings() {
-        StringBuilder sb = new StringBuilder("\n\n");
+        StringBuilder sb = new StringBuilder();
         this.structure.forEach(strct -> {
             getDataSettings(strct);
         });
@@ -133,5 +134,20 @@ public class Structure implements ContainerObject, DataSettings {
     @Override
     public ArrayList<StructureObject> getObjects() {
         return structure;
+    }
+
+    @Override
+    public String getHash() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void gen_Hash() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean checkHash(String hash) {
+        throw new UnsupportedOperationException("Not supported yet");
     }
 }

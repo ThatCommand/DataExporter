@@ -42,15 +42,20 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     public ContainerGroup() {
         setGroupName("DATA_GROUP_" + lastnumbernamegroup);
         lastnumbernamegroup++;
-        gen_hash();
+        gen_Hash();
     }
 
     public ContainerGroup(String groupName) {
         setGroupName(groupName);
-        gen_hash();
+        gen_Hash();
     }
 
-    private void gen_hash() {
+    public ContainerGroup(String hash, char sepatator, char open, char close) {
+
+    }
+
+    @Override
+    public void gen_Hash() {
         hash
                 .append(group_name.charAt(0))
                 .append(Integer.toHexString((int) open_char.getSymbol()))
@@ -167,7 +172,7 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     @Override
     public String getStringTemplate() {
         genStringTemplate();
-        gen_hash();
+        gen_Hash();
         return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString()).replaceAll("INSERT_HASH_HERE", hash.toString());
     }
 
@@ -243,6 +248,11 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     public boolean isAcceptable() {
         checkStatus();
         return acceptable;
+    }
+
+    @Override
+    public boolean checkHash(String hash) {
+        return this.hash.toString().equals(hash);
     }
 
     public ContainerGroup readData(String data) {
@@ -359,12 +369,12 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
                 .append("[HASH:")
                 .append(hash.toString())
                 .append("]")
-                .append(";[SEPARATOR:")
+                .append(" AND [SEPARATOR:")
                 .append(sep != null ? sep.getData() : Symbol.NUL)
                 .append("]")
-                .append(";[OPEN:")
+                .append(" AND [OPEN:")
                 .append(open_char.getSymbol())
-                .append("];[CLOSE:")
+                .append("] AND [CLOSE:")
                 .append(close_char.getSymbol())
                 .append("] AS CG")
                 .append(Symbol.CLOSE_BLOCK);
@@ -374,6 +384,11 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     @Override
     public ArrayList<StructureObject> getObjects() {
         return sos;
+    }
+
+    @Override
+    public String getHash() {
+        return hash.toString();
     }
 
 }

@@ -91,42 +91,42 @@ public class RunTests {
         // TODO code application logic here
         DataHolder dh = new DataHolder();
         dh
-                .setVariableName("TestNomeVar")
+                .setVariableName("ATestNomeVar")
                 .setAssignSymbol(new Symbol(':'))
                 .setSeparator(new Separator(';'))
-                .setData("testo 1", 2143.56, 3575, 45f, true, (short) 120000, (long) 300);
+                .setData("testo 1", 2143.56, 3575, 45f, true, (short) 120000, (long) 999999999);
         DataHolder dh2 = new DataHolder();
         dh2
-                .setVariableName("TestNomeVar2")
+                .setVariableName("BTestNomeVar2")
                 .setAssignSymbol(new Symbol('='))
                 .setSeparator(new Separator('%'))
                 .setData("testo 2");
         DataHolder dh3 = new DataHolder();
         dh3
-                .setVariableName("TestNomeVar3")
+                .setVariableName("CTestNomeVar3")
                 .setAssignSymbol(new Symbol('§'))
                 .setSeparator(new Separator('$'))
                 .setData("testo 3");
         DataHolder dh4 = new DataHolder();
         dh4
-                .setVariableName("TestNomeVar4")
+                .setVariableName("DTestNomeVar4")
                 .setAssignSymbol(new Symbol('§'))
                 .setSeparator(new Separator('$'))
                 .setData("testo 4");
         DataHolder dh5 = new DataHolder();
         dh5
-                .setVariableName("TestNomeVar5")
+                .setVariableName("ETestNomeVar5")
                 .setAssignSymbol(new Symbol('§'))
                 .setSeparator(new Separator('$'))
                 .setData("testo 5");
         ContainerGroup cg2 = new ContainerGroup();
         cg2
-                .setGroupName("TestNomeGruppo2")
+                .setGroupName("FTestNomeGruppo2")
                 .addStructureObject(dh3)
                 .addStructureObject(dh5);
         ContainerGroup cg = new ContainerGroup();
         cg
-                .setGroupName("Test\nNome\nGruppo")
+                .setGroupName("GTest\nNome\nGruppo")
                 .addStructureObject(dh)
                 .addStructureObject(dh2)
                 .addStructureObject(cg2)
@@ -146,13 +146,17 @@ public class RunTests {
 //            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
 //            rt.decrypt("BAZZUORD90123456", new File(f.getAbsolutePath()+".encp"),new File(f.getAbsolutePath()+".decp"));
 
-//        Reader r = new Reader();
-//        r
-//                .setEncoding(Encoding.ENCODINGS.UTF_16).
-//                setFilename(new FileName("Example"))
-//                .setExtension(new Extension("Writing exemple file"))
-//                .setDestination("C:\\Users\\gabri\\Desktop\\").read();
-//
+        Reader r = new Reader();
+        r
+                .setEncoding(Encoding.ENCODINGS.UTF_16).
+                setFilename(new FileName("Example"))
+                .setExtension(new Extension("Writing exemple file"))
+                .setDestination("C:\\Users\\gabri\\Desktop\\").read();
+
+        String defs = r.getDefs();
+        String file = r.getFile();
+        System.out.println(file);
+        System.out.println(defs);
 //        ArrayList<String> asr = cg.parseData(r.getText());
 //        asr.forEach(a -> System.out.println(a));
 

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * @author ThatCommand
  */
 public class DataHolder implements StructureObject, DataSettings {
-    
+
     Object[] stored_data;
     String name;
     StringBuilder FormattedData = new StringBuilder();
@@ -42,19 +42,19 @@ public class DataHolder implements StructureObject, DataSettings {
     Symbol open_data_container = new Symbol('(');
     Symbol close_data_container = new Symbol(')');
     Separator multiple_separator;
-    
+
     private final static String tmp_VarName = "DataHolder_VARNAME";
     private final static String tmp_MultipleVar = "DataHolder_MULTIPLEVAR";
     private final static String tmp_SingleVar = "DataHolder_VAR";
     private StringBuilder hash = new StringBuilder();
-    
+
     public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "DH#HC?INSERT_HASH_HERE?INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
-    
+
     public static int last_automated_assigned_name = 0;
-    
+
     public DataHolder(String holder_name) {
         name = holder_name.replaceAll("\n", Symbol.SLASH_N);
-        gen_hash();
+        gen_Hash();
     }
 
     /**
@@ -67,10 +67,11 @@ public class DataHolder implements StructureObject, DataSettings {
     public DataHolder() {
         last_automated_assigned_name++;
         name = "DataHolder_" + last_automated_assigned_name;
-        gen_hash();
+        gen_Hash();
     }
-    
-    private void gen_hash() {
+
+    @Override
+    public void gen_Hash() {
         hash
                 .append(name.charAt(0))
                 .append(Integer.toHexString((int) open_data_container.getSymbol()))
@@ -79,7 +80,7 @@ public class DataHolder implements StructureObject, DataSettings {
                 .append(name.length())
                 .append(name.getBytes());
     }
-    
+
     @Override
     public String getData() {
         checkStatus();
@@ -166,14 +167,14 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return null;
     }
-    
+
     @Override
     public String getStringTemplate() {
         genStringTemplate();
-        gen_hash();
+        gen_Hash();
         return BLOCK_DEFINITION.replaceAll("INSERT_BLOCK_HERE", FormattedData.toString()).replaceAll("INSERT_HASH_HERE", hash.toString());
     }
-    
+
     @Override
     public void genStringTemplate() {
         checkStatus();
@@ -189,17 +190,17 @@ public class DataHolder implements StructureObject, DataSettings {
             FormattedData.append((multiple_separator != null ? close_data_container.getSymbol() : ""));
         }
     }
-    
+
     @Override
     public boolean isContainer() {
         return false;
     }
-    
+
     @Override
     public boolean isDataHolder() {
         return true;
     }
-    
+
     @Override
     public boolean isStructureSpecialChar() {
         return false;
@@ -234,7 +235,7 @@ public class DataHolder implements StructureObject, DataSettings {
     public StructureObject removeStructureObject(StructureObject so) {
         return this;
     }
-    
+
     boolean acceptable = true;
 
     /**
@@ -326,7 +327,7 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return this;
     }
-    
+
     public DataHolder checkStatus() {
         if (!acceptable) {
             acceptable = true;
@@ -344,13 +345,13 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return this;
     }
-    
+
     @Override
     public boolean isAcceptable() {
         checkStatus();
         return acceptable;
     }
-    
+
     @Override
     public Pattern getPattern() {
         p = Pattern.compile(Symbol.OPEN_BLOCK
@@ -373,9 +374,9 @@ public class DataHolder implements StructureObject, DataSettings {
         );
         return p;
     }
-    
+
     Pattern p;
-    
+
     @Override
     public void setPattern(Pattern p) {
         this.p = p;
@@ -503,7 +504,7 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return this;
     }
-    
+
     @Override
     public String toString() {
         String text_to_out = name + ":";
@@ -512,7 +513,7 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return text_to_out;
     }
-    
+
     @Override
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();
@@ -521,13 +522,24 @@ public class DataHolder implements StructureObject, DataSettings {
                 .append("[HASH:")
                 .append(hash.toString())
                 .append("]")
-                .append(";[SEPARATOR:")
+                .append(" AND [SEPARATOR:")
                 .append(multiple_separator != null ? multiple_separator.getData() : Symbol.NUL)
                 .append("]")
-                .append(";[ASSIGN:")
+                .append(" AND [ASSIGN:")
                 .append(assign_symb.getSymbol())
                 .append("] AS DH")
                 .append(Symbol.CLOSE_BLOCK);
         return sb.toString();
     }
+
+    @Override
+    public String getHash() {
+        return hash.toString();
+    }
+
+    @Override
+    public boolean checkHash(String hash) {
+        return this.hash.toString().equals(hash);
+    }
+
 }
