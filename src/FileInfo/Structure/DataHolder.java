@@ -7,6 +7,7 @@ package FileInfo.Structure;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,8 +71,14 @@ public class DataHolder implements StructureObject, DataSettings {
         gen_Hash();
     }
 
+    public DataHolder(String hash, char sepatator, char assign) {
+        this.hash.append(hash);
+        multiple_separator = new Separator(sepatator);
+        assign_symb = new Symbol(assign);
+    }
+
     @Override
-    public void gen_Hash() {
+    public final void gen_Hash() {
         hash
                 .append(name.charAt(0))
                 .append(Integer.toHexString((int) open_data_container.getSymbol()))

@@ -148,8 +148,8 @@ public class RunTests {
 
         Reader r = new Reader();
         r
-                .setEncoding(Encoding.ENCODINGS.UTF_16).
-                setFilename(new FileName("Example"))
+                .setEncoding(Encoding.ENCODINGS.UTF_16)
+                .setFilename(new FileName("Example"))
                 .setExtension(new Extension("Writing exemple file"))
                 .setDestination("C:\\Users\\gabri\\Desktop\\").read();
 

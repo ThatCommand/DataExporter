@@ -51,11 +51,14 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     }
 
     public ContainerGroup(String hash, char sepatator, char open, char close) {
-
+        this.hash.append(hash);
+        sep=new Separator(sepatator);
+        open_char=new Symbol(open);
+        close_char=new Symbol(close);
     }
 
     @Override
-    public void gen_Hash() {
+    public final void gen_Hash() {
         hash
                 .append(group_name.charAt(0))
                 .append(Integer.toHexString((int) open_char.getSymbol()))

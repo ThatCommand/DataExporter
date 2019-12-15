@@ -6,8 +6,12 @@
 package FileInfo.Structure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import reader.Reader;
 
 /**
  *
@@ -18,6 +22,8 @@ public class Structure implements ContainerObject, DataSettings {
     BooleanProperty building = new SimpleBooleanProperty(false);
 
     ArrayList<StructureObject> structure = new ArrayList<>();
+
+    public static HashMap<String, StructureObject> readed_Objects;
 
     Separator sep;
     Symbol open_char;
@@ -149,5 +155,75 @@ public class Structure implements ContainerObject, DataSettings {
     @Override
     public boolean checkHash(String hash) {
         throw new UnsupportedOperationException("Not supported yet");
+    }
+
+    public void read(Reader r) {
+        r.read();
+        String definitions = r.getDefs();
+        Pattern general = Pattern.compile("^#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK + "$");
+        Matcher m_g = general.matcher(definitions);
+        while (m_g.find()) {
+            String definition = m_g.group(1);
+            String type = m_g.group(2);
+            HashMap<String, String> asd = getDef(definition);
+            for(String key:asd.keySet()){
+                
+            }
+            asd.keySet().forEach(key -> {
+                String hash = null;
+                char sepe = 0;
+                char op = 0;
+                char cl = 0;
+                char ass = 0;
+                switch (key) {
+                    case "HASH":
+                        hash = asd.get(key);
+                        break;
+                    case "SEPARATOR":
+                        sepe = asd.get(key).charAt(0);
+                        break;
+                    case "OPEN":
+                        op = asd.get(key).charAt(0);
+                        break;
+                    case "CLOSE":
+                        cl = asd.get(key).charAt(0);
+                        break;
+                    case "ASSIGN":
+                        ass = asd.get(key).charAt(0);
+                        break;
+                    default:
+                        break;
+                }
+                switch (type) {
+                    case "CG":
+                        ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
+                        readed_Objects.put(hash, cg);
+                        break;
+                    case "DH":
+                        DataHolder dh = new DataHolder(hash, sepe, ass);
+                        readed_Objects.put(hash, dh);
+                        break;
+                }
+            });
+        }
+    }
+
+    private HashMap<String, String> getDef(String s) {
+
+        HashMap<String, String> hm = new HashMap<>();
+
+        String[] ses = s.split(" AND ");
+        Pattern general = Pattern.compile("\\[(.*):(.*)\\]");
+
+        for (String sub_s : ses) {
+            Matcher m_g = general.matcher(sub_s);
+            if (m_g.find()) {
+                String Name = m_g.group(1);
+                String value = m_g.group(2);
+                hm.put(Name, value);
+            }
+        }
+
+        return hm;
     }
 }

@@ -77,6 +77,8 @@ public class Reader {
 
     public File read() {
         BufferedReader fr;
+        file = new StringBuilder();
+        defs = new StringBuilder();
         if (destination != null) {
             selectedFile = new File(destination + "/" + (f.isValid() ? f.getNAME() : ErrorThrown("Invalid name format")) + e.getExtension());
             try {
