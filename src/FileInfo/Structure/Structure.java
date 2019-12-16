@@ -159,22 +159,20 @@ public class Structure implements ContainerObject, DataSettings {
 
     public void read(Reader r) {
         r.read();
+        readed_Objects = new HashMap<>();
         String definitions = r.getDefs();
-        Pattern general = Pattern.compile("^#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK + "$");
+        Pattern general = Pattern.compile("#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK);
         Matcher m_g = general.matcher(definitions);
         while (m_g.find()) {
             String definition = m_g.group(1);
             String type = m_g.group(2);
             HashMap<String, String> asd = getDef(definition);
-            for(String key:asd.keySet()){
-                
-            }
-            asd.keySet().forEach(key -> {
-                String hash = null;
-                char sepe = 0;
-                char op = 0;
-                char cl = 0;
-                char ass = 0;
+            String hash = null;
+            char sepe = 0;
+            char op = 0;
+            char cl = 0;
+            char ass = 0;
+            for (String key : asd.keySet()) {
                 switch (key) {
                     case "HASH":
                         hash = asd.get(key);
@@ -194,18 +192,25 @@ public class Structure implements ContainerObject, DataSettings {
                     default:
                         break;
                 }
-                switch (type) {
-                    case "CG":
-                        ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
-                        readed_Objects.put(hash, cg);
-                        break;
-                    case "DH":
-                        DataHolder dh = new DataHolder(hash, sepe, ass);
-                        readed_Objects.put(hash, dh);
-                        break;
-                }
-            });
+            }
+            switch (type) {
+                case "CG":
+                    ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
+                    readed_Objects.put(hash, cg);
+                    break;
+                case "DH":
+                    DataHolder dh = new DataHolder(hash, sepe, ass);
+                    readed_Objects.put(hash, dh);
+                    break;
+                default:
+                    break;
+            }
         }
+        System.out.println("QUI");
+        readed_Objects.keySet().forEach(k -> {
+            System.out.print(k + "\t->\t");
+            System.out.println(readed_Objects.get(k).toString());
+        });
     }
 
     private HashMap<String, String> getDef(String s) {
@@ -213,7 +218,7 @@ public class Structure implements ContainerObject, DataSettings {
         HashMap<String, String> hm = new HashMap<>();
 
         String[] ses = s.split(" AND ");
-        Pattern general = Pattern.compile("\\[(.*):(.*)\\]");
+        Pattern general = Pattern.compile("\\[([^:]*):(.*)\\]");
 
         for (String sub_s : ses) {
             Matcher m_g = general.matcher(sub_s);

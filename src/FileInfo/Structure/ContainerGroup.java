@@ -52,9 +52,9 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
 
     public ContainerGroup(String hash, char sepatator, char open, char close) {
         this.hash.append(hash);
-        sep=new Separator(sepatator);
-        open_char=new Symbol(open);
-        close_char=new Symbol(close);
+        sep = new Separator(sepatator);
+        open_char = new Symbol(open);
+        close_char = new Symbol(close);
     }
 
     @Override
@@ -266,9 +266,13 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
                     + "]*)\\?");
             Pattern pattern = Pattern.compile("\\?\"(.*?)\"");
             Matcher matcher = pattern.matcher(data);
+            Matcher match_1 = pattern_1.matcher(data);
             ArrayList<String> internal_datas = parseData(data);
             if (matcher.find()) {//nome variabile
                 setGroupName(matcher.group(1));
+            }
+            if (match_1.find()) {
+                hash = new StringBuilder(match_1.group(1));
             }
             if (internal_datas != null && internal_datas.size() > 0) {
                 for (String datar : internal_datas) {

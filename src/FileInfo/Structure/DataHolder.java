@@ -7,7 +7,6 @@ package FileInfo.Structure;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +71,7 @@ public class DataHolder implements StructureObject, DataSettings {
     }
 
     public DataHolder(String hash, char sepatator, char assign) {
+        super();
         this.hash.append(hash);
         multiple_separator = new Separator(sepatator);
         assign_symb = new Symbol(assign);
@@ -515,8 +515,12 @@ public class DataHolder implements StructureObject, DataSettings {
     @Override
     public String toString() {
         String text_to_out = name + ":";
-        for (Object stored_data1 : stored_data) {
-            text_to_out += "\n\t" + stored_data1 + "\t- " + stored_data1.getClass();
+        if (stored_data != null) {
+            for (Object stored_data1 : stored_data) {
+                text_to_out += "\n\t" + stored_data1 + "\t- " + stored_data1.getClass();
+            }
+        } else {
+            return getClass().getName() + "@" + Integer.toHexString(hashCode());
         }
         return text_to_out;
     }

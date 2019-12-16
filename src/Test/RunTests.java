@@ -157,6 +157,9 @@ public class RunTests {
         String file = r.getFile();
         System.out.println(file);
         System.out.println(defs);
+        Structure s_=new Structure();
+        
+        s_.read(r);
 //        ArrayList<String> asr = cg.parseData(r.getText());
 //        asr.forEach(a -> System.out.println(a));
 
