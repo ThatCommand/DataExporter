@@ -64,7 +64,7 @@ public class Reader {
     }
 
     public String getText() {
-        return text.replaceAll("\n|\t|\r", "");
+        return text;
     }
 
     public String getFile() {
@@ -79,6 +79,7 @@ public class Reader {
         BufferedReader fr;
         file = new StringBuilder();
         defs = new StringBuilder();
+        text="";
         if (destination != null) {
             selectedFile = new File(destination + "/" + (f.isValid() ? f.getNAME() : ErrorThrown("Invalid name format")) + e.getExtension());
             try {
@@ -97,6 +98,7 @@ public class Reader {
                             defs.append(line).append("\n");
                         }
                     }
+                    text += line;
                 }
 
             } catch (FileNotFoundException | UnsupportedEncodingException ex) {

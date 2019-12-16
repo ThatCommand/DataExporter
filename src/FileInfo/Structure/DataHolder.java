@@ -524,7 +524,7 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return text_to_out;
     }
-
+    
     @Override
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();

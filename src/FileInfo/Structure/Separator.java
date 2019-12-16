@@ -80,12 +80,24 @@ public class Separator extends Symbol implements StructureObject {
 
     @Override
     public Pattern getPattern() {
-        return null;
+        p = Pattern.compile(Symbol.OPEN_BLOCK
+                + "(.*)"
+                + Symbol.CLOSE_BLOCK
+                + "\n"
+                + Symbol.DEFINITION_START
+                + "\n(#DEFINE:([^"
+                + Symbol.CLOSE_BLOCK
+                + "])* AS (.*){2}"
+                + Symbol.CLOSE_BLOCK
+                + "\n)*");
+        return p;
     }
+
+    private Pattern p;
 
     @Override
     public void setPattern(Pattern p) {
-
+        this.p = p;
     }
 
     boolean acceptable = true;
@@ -102,6 +114,5 @@ public class Separator extends Symbol implements StructureObject {
         checkStatus();
         return acceptable;
     }
-
 
 }

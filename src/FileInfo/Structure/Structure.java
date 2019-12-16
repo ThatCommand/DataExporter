@@ -158,59 +158,62 @@ public class Structure implements ContainerObject, DataSettings {
     }
 
     public void read(Reader r) {
-        r.read();
-        readed_Objects = new HashMap<>();
-        String definitions = r.getDefs();
-        Pattern general = Pattern.compile("#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK);
-        Matcher m_g = general.matcher(definitions);
-        while (m_g.find()) {
-            String definition = m_g.group(1);
-            String type = m_g.group(2);
-            HashMap<String, String> asd = getDef(definition);
-            String hash = null;
-            char sepe = 0;
-            char op = 0;
-            char cl = 0;
-            char ass = 0;
-            for (String key : asd.keySet()) {
-                switch (key) {
-                    case "HASH":
-                        hash = asd.get(key);
+        if (checkPattern(r.getText())) {
+            r.read();
+            readed_Objects = new HashMap<>();
+            String definitions = r.getDefs();
+            Pattern general = Pattern.compile("#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK);
+            Matcher m_g = general.matcher(definitions);
+            while (m_g.find()) {
+                String definition = m_g.group(1);
+                String type = m_g.group(2);
+                HashMap<String, String> asd = getDef(definition);
+                String hash = null;
+                char sepe = 0;
+                char op = 0;
+                char cl = 0;
+                char ass = 0;
+                for (String key : asd.keySet()) {
+                    switch (key) {
+                        case "HASH":
+                            hash = asd.get(key);
+                            break;
+                        case "SEPARATOR":
+                            sepe = asd.get(key).charAt(0);
+                            break;
+                        case "OPEN":
+                            op = asd.get(key).charAt(0);
+                            break;
+                        case "CLOSE":
+                            cl = asd.get(key).charAt(0);
+                            break;
+                        case "ASSIGN":
+                            ass = asd.get(key).charAt(0);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                switch (type) {
+                    case "CG":
+                        ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
+                        readed_Objects.put(hash, cg);
                         break;
-                    case "SEPARATOR":
-                        sepe = asd.get(key).charAt(0);
-                        break;
-                    case "OPEN":
-                        op = asd.get(key).charAt(0);
-                        break;
-                    case "CLOSE":
-                        cl = asd.get(key).charAt(0);
-                        break;
-                    case "ASSIGN":
-                        ass = asd.get(key).charAt(0);
+                    case "DH":
+                        DataHolder dh = new DataHolder(hash, sepe, ass);
+                        readed_Objects.put(hash, dh);
                         break;
                     default:
                         break;
                 }
             }
-            switch (type) {
-                case "CG":
-                    ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
-                    readed_Objects.put(hash, cg);
-                    break;
-                case "DH":
-                    DataHolder dh = new DataHolder(hash, sepe, ass);
-                    readed_Objects.put(hash, dh);
-                    break;
-                default:
-                    break;
-            }
         }
-        System.out.println("QUI");
-        readed_Objects.keySet().forEach(k -> {
-            System.out.print(k + "\t->\t");
-            System.out.println(readed_Objects.get(k).toString());
-        });
+//        System.out.println("QUI");
+//        readed_Objects.keySet().forEach(k -> {
+//            System.out.print(k + "\t->\t");
+//            System.out.println(readed_Objects.get(k).toString());
+//        });
+
     }
 
     private HashMap<String, String> getDef(String s) {
@@ -230,5 +233,31 @@ public class Structure implements ContainerObject, DataSettings {
         }
 
         return hm;
+    }
+
+    public Pattern getPattern() {
+        p = Pattern.compile(Symbol.OPEN_BLOCK
+                + "(.*)"
+                + Symbol.CLOSE_BLOCK
+                + "\n"
+                + Symbol.DEFINITION_START
+                + "\n(#DEFINE:([^"
+                + Symbol.CLOSE_BLOCK
+                + "])* AS (.*){2}"
+                + Symbol.CLOSE_BLOCK
+                + "\n)*");
+        return p;
+    }
+
+    private Pattern p;
+
+    public void setPattern(Pattern p) {
+        this.p = p;
+    }
+
+    public boolean checkPattern(String text) {
+        boolean asd = text.matches(getPattern().toString());
+        System.out.println("FILE MACTHES:" + asd);
+        return asd;
     }
 }
