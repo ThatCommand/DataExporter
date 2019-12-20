@@ -79,7 +79,7 @@ public class Reader {
         BufferedReader fr;
         file = new StringBuilder();
         defs = new StringBuilder();
-        text="";
+        text = "";
         if (destination != null) {
             selectedFile = new File(destination + "/" + (f.isValid() ? f.getNAME() : ErrorThrown("Invalid name format")) + e.getExtension());
             try {
@@ -92,6 +92,7 @@ public class Reader {
                             if (!line.equals(Symbol.DEFINITION_START.replaceAll("\n", ""))) {
                                 file.append(line).append("\n");
                             } else {
+                                defs.append(line).append("\n");
                                 is_definition = true;
                             }
                         } else {

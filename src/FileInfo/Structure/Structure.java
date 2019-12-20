@@ -7,6 +7,7 @@ package FileInfo.Structure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.property.BooleanProperty;
@@ -104,9 +105,11 @@ public class Structure implements ContainerObject, DataSettings {
 
     public String getStructure() {
         StringBuilder sbs = new StringBuilder();
+        sbs.append("{OPEN_SYS}");
         structure.forEach(so -> {
             sbs.append(so.getData());
         });
+        sbs.append("{CLOSE_SYS}");
         sbs.append("\n").append(Symbol.DEFINITION_START);
         sbs.append(getDataSettings());
         return sbs.toString();
@@ -158,62 +161,165 @@ public class Structure implements ContainerObject, DataSettings {
     }
 
     public void read(Reader r) {
-        if (checkPattern(r.getText())) {
+        if (r != null) {
             r.read();
-            readed_Objects = new HashMap<>();
             String definitions = r.getDefs();
-            Pattern general = Pattern.compile("#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK);
-            Matcher m_g = general.matcher(definitions);
-            while (m_g.find()) {
-                String definition = m_g.group(1);
-                String type = m_g.group(2);
-                HashMap<String, String> asd = getDef(definition);
-                String hash = null;
-                char sepe = 0;
-                char op = 0;
-                char cl = 0;
-                char ass = 0;
-                for (String key : asd.keySet()) {
-                    switch (key) {
-                        case "HASH":
-                            hash = asd.get(key);
+            if (definitions.matches(getPattern().pattern())) {
+                readed_Objects = new HashMap<>();
+                Pattern general = Pattern.compile("#DEFINE:(.+) AS ([^" + Symbol.CLOSE_BLOCK + "]{2})" + Symbol.CLOSE_BLOCK);
+                Matcher m_g = general.matcher(definitions);
+                while (m_g.find()) {
+                    String definition = m_g.group(1);
+                    String type = m_g.group(2);
+                    HashMap<String, String> asd = getDef(definition);
+                    String hash = null;
+                    char sepe = 0;
+                    char op = 0;
+                    char cl = 0;
+                    char ass = 0;
+                    for (String key : asd.keySet()) {
+                        switch (key) {
+                            case "HASH":
+                                hash = asd.get(key);
+                                break;
+                            case "SEPARATOR":
+                                sepe = asd.get(key).charAt(0);
+                                break;
+                            case "OPEN":
+                                op = asd.get(key).charAt(0);
+                                break;
+                            case "CLOSE":
+                                cl = asd.get(key).charAt(0);
+                                break;
+                            case "ASSIGN":
+                                ass = asd.get(key).charAt(0);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    switch (type) {
+                        case "CG":
+                            ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
+                            readed_Objects.put(hash, cg);
                             break;
-                        case "SEPARATOR":
-                            sepe = asd.get(key).charAt(0);
-                            break;
-                        case "OPEN":
-                            op = asd.get(key).charAt(0);
-                            break;
-                        case "CLOSE":
-                            cl = asd.get(key).charAt(0);
-                            break;
-                        case "ASSIGN":
-                            ass = asd.get(key).charAt(0);
+                        case "DH":
+                            DataHolder dh = new DataHolder(hash, sepe, ass);
+                            readed_Objects.put(hash, dh);
                             break;
                         default:
                             break;
                     }
                 }
-                switch (type) {
-                    case "CG":
-                        ContainerGroup cg = new ContainerGroup(hash, sepe, op, cl);
-                        readed_Objects.put(hash, cg);
-                        break;
-                    case "DH":
-                        DataHolder dh = new DataHolder(hash, sepe, ass);
-                        readed_Objects.put(hash, dh);
-                        break;
-                    default:
-                        break;
+                String datas = r.getFile();
+                readData(datas);
+            }
+        }
+    }
+
+    public Structure readData(String data) {
+        if (data != null && data.matches(getPattern2().pattern())) {
+            ArrayList<String> internal_datas = parseData(data);
+            if (internal_datas != null && internal_datas.size() > 0) {
+                for (String datar : internal_datas) {
+                    Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "([^" + Symbol.CLOSE_BLOCK + "]{2})#HC\\?([^" + Symbol.CLOSE_BLOCK + Symbol.STRING_DEFINITION + "]*)\\?" + Symbol.STRING_DEFINITION);
+                    Matcher matcher_2 = pattern_2.matcher(datar);
+                    if (matcher_2.find()) {
+                        String block_name = matcher_2.group(1);
+                        String block_hash = matcher_2.group(2);
+                        StructureObject so = readed_Objects.get(block_hash);
+                        switch (block_name) {
+                            case "CG":
+                                if (so != null) {
+                                    ContainerGroup cg = (ContainerGroup) so;
+                                    if (cg.checkHash(block_hash)) {
+                                        cg.readData(datar);
+                                        structure.add(cg);
+                                    }
+                                }
+                                break;
+                            case "DH":
+                                if (so != null) {
+                                    DataHolder dh = (DataHolder) so;
+                                    if (dh.checkHash(block_hash)) {
+                                        dh.readData(datar);
+                                        structure.add(so);
+                                    }
+                                }
+                                break;
+                        }
+                    }
                 }
             }
         }
-//        System.out.println("QUI");
-//        readed_Objects.keySet().forEach(k -> {
-//            System.out.print(k + "\t->\t");
-//            System.out.println(readed_Objects.get(k).toString());
-//        });
+        return this;
+    }
 
+    private String exctractData(String dt) {
+        if (dt.matches(getPattern2().pattern())) {
+            Matcher m = getPattern2().matcher(dt);
+            if (m.find()) {
+                String s = m.group(1);
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private ArrayList<String> parseData(String dt) {
+        dt = exctractData(dt);
+//        dt = dt.substring(1, dt.length() - 1);
+        if (dt != null && !dt.isEmpty()) {
+            ArrayList<String> arr = new ArrayList<>();
+            Stack<Character> open_close = new Stack<>();
+            boolean ans = true;
+            boolean final_closed = false;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < dt.length(); i++) {
+                boolean closed = false;
+                Character my_char = dt.charAt(i);
+                if (my_char == Symbol.OPEN_BLOCK) {
+                    open_close.push(my_char);
+                    if (final_closed) {
+                        sb = new StringBuilder();
+                    }
+                } else if (my_char == Symbol.CLOSE_BLOCK) {
+                    if (!open_close.isEmpty() && open_close.peek() == Symbol.OPEN_BLOCK) {
+                        open_close.pop();
+                        closed = true;
+                    } else {
+                        ans = false;
+                    }
+                }
+                final_closed = open_close.size() == 0;
+                if (sb != null) {
+                    sb.append(my_char);
+                }
+                if (final_closed) {
+                    arr.add(sb != null ? sb.toString() : null);
+                    sb = null;
+                }
+
+            }
+            if (ans) {
+                return arr;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Questo hash map è formato da:
+     *
+     * HashCode,
+     *
+     * @return
+     */
+    private HashMap<String, String> getData(String s) {
+
+        return null;
     }
 
     private HashMap<String, String> getDef(String s) {
@@ -236,28 +342,40 @@ public class Structure implements ContainerObject, DataSettings {
     }
 
     public Pattern getPattern() {
-        p = Pattern.compile(Symbol.OPEN_BLOCK
-                + "(.*)"
-                + Symbol.CLOSE_BLOCK
-                + "\n"
-                + Symbol.DEFINITION_START
-                + "\n(#DEFINE:([^"
+        p = Pattern.compile(Symbol.DEFINITION_START
+                + "(#DEFINE:([^"
                 + Symbol.CLOSE_BLOCK
                 + "])* AS (.*){2}"
                 + Symbol.CLOSE_BLOCK
-                + "\n)*");
+                + "[\n])*", Pattern.DOTALL);
         return p;
     }
 
+    public Pattern getPattern2() {
+        p2 = Pattern.compile("\\{OPEN_SYS\\}(.*)\\{CLOSE_SYS\\}", Pattern.DOTALL);
+        return p2;
+    }
+
     private Pattern p;
+    private Pattern p2;
 
     public void setPattern(Pattern p) {
         this.p = p;
     }
 
+    public void setPattern2(Pattern p2) {
+        this.p2 = p2;
+    }
+
     public boolean checkPattern(String text) {
-        boolean asd = text.matches(getPattern().toString());
-        System.out.println("FILE MACTHES:" + asd);
+        boolean asd = text.matches(getPattern().pattern());
+        System.out.println("DEPENDENCIES MACTHES:" + asd);
+        return asd;
+    }
+
+    public boolean checkPattern2(String text) {
+        boolean asd = text.matches(getPattern2().pattern());
+        System.out.println("STRUCTURE MATCHES:" + asd);
         return asd;
     }
 }

@@ -9,6 +9,7 @@ import FileInfo.Encoding;
 import FileInfo.Extension;
 import FileInfo.FileName;
 import FileInfo.Structure.ContainerGroup;
+import FileInfo.Structure.ContainerObject;
 import FileInfo.Structure.DataHolder;
 import FileInfo.Structure.Separator;
 import FileInfo.Structure.Structure;
@@ -19,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -131,6 +131,11 @@ public class RunTests {
                 .addStructureObject(dh2)
                 .addStructureObject(cg2)
                 .addStructureObject(dh4);
+
+//        ContainerGroup new_cg = new ContainerGroup();
+//        new_cg.setPattern(cg.getPattern());
+//        String str = cg.getData().replaceAll("\n|\t|\r", "");;
+//        new_cg.readData(str);
         Structure s = new Structure();
         s.addStructureObject(cg);
 
@@ -157,8 +162,8 @@ public class RunTests {
         String file = r.getFile();
         System.out.println(file);
         System.out.println(defs);
-        Structure s_=new Structure();
-        
+        Structure s_ = new Structure();
+
         s_.read(r);
 //        ArrayList<String> asr = cg.parseData(r.getText());
 //        asr.forEach(a -> System.out.println(a));
@@ -170,10 +175,27 @@ public class RunTests {
 //                .setPattern(dh.getPattern());
 //        
 //        nest.readData(r.getText());
+        PrintStructure(s);
         System.out.println("PATTERN GROUP:\t" + cg.getPattern().toString());
 //        System.out.println("DH:\t" + dh.getData());
 //        System.out.println("NEST:\t" + nest.getData());
 //        System.out.println(nest.toString());
+    }
+    static int tabs = 0;
+    static Structure s;
+
+    public static void PrintStructure(ContainerObject so) {
+        so.getObjects().forEach(o -> {
+            for (int i = 0; i < tabs; i++) {
+                System.err.print("\t");
+            }
+            System.err.println(o.toString());
+            if (o instanceof ContainerObject) {
+                tabs++;
+                PrintStructure((ContainerObject) o);
+            }
+        });
+        tabs--;
     }
 
 }

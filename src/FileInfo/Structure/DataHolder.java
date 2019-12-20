@@ -367,6 +367,7 @@ public class DataHolder implements StructureObject, DataSettings {
                 + "]{2}#"
                 + "HC\\?([^"
                 + Symbol.CLOSE_BLOCK
+                + Symbol.STRING_DEFINITION
                 + "]*)\\?"
                 + Symbol.STRING_DEFINITION
                 + "([^"
@@ -408,7 +409,7 @@ public class DataHolder implements StructureObject, DataSettings {
      * @return
      */
     public DataHolder readData(String data) {
-        if (data != null && data.matches(p.pattern())) {
+        if (data != null && data.matches(getPattern().pattern())) {
             Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
                     + "DH#HC\\?([^"
                     + Symbol.CLOSE_BLOCK
@@ -524,7 +525,7 @@ public class DataHolder implements StructureObject, DataSettings {
         }
         return text_to_out;
     }
-    
+
     @Override
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();

@@ -5,6 +5,7 @@
  */
 package FileInfo.Structure;
 
+import static FileInfo.Structure.Structure.readed_Objects;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -27,8 +28,9 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     private final static String tmp_VarName = "ContainerGroup_VARNAME";
     private final static String tmp_Holdable = "ContainerGroup_HOLDABLE";
     private StringBuilder hash = new StringBuilder();
+    private final boolean readed;
 
-    public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "CG#DH?INSERT_HASH_HERE?INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
+    public final static String BLOCK_DEFINITION = Symbol.OPEN_BLOCK + "CG#HC?INSERT_HASH_HERE?INSERT_BLOCK_HERE" + Symbol.CLOSE_BLOCK;
     public static int lastnumbernamegroup = 0;
 
     /**
@@ -40,12 +42,14 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
      * Object that can contain other sub-objects and/or variables
      */
     public ContainerGroup() {
+        readed = false;
         setGroupName("DATA_GROUP_" + lastnumbernamegroup);
         lastnumbernamegroup++;
         gen_Hash();
     }
 
     public ContainerGroup(String groupName) {
+        readed = false;
         setGroupName(groupName);
         gen_Hash();
     }
@@ -55,6 +59,7 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
         sep = new Separator(sepatator);
         open_char = new Symbol(open);
         close_char = new Symbol(close);
+        readed = true;
     }
 
     @Override
@@ -217,12 +222,14 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     @Override
     public Pattern getPattern() {
         StringBuilder pattern_logic = new StringBuilder();
+
         pattern_logic
                 .append(Symbol.OPEN_BLOCK)
                 .append("[^")
                 .append(Symbol.CLOSE_BLOCK)
                 .append("]{2}#HC\\?([^")
                 .append(Symbol.CLOSE_BLOCK)
+                .append(Symbol.STRING_DEFINITION)
                 .append("]*)\\?")
                 .append(Symbol.STRING_DEFINITION)
                 .append("([^")
@@ -230,15 +237,19 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
                 .append("]*)")
                 .append(Symbol.STRING_DEFINITION)
                 .append(getOpenChar());
-        sos.forEach(so -> {
-            if (!so.isStructureSpecialChar()) {
-                pattern_logic.append(so.getPattern() != null ? so.getPattern().pattern() : null);
-            }
-        });
+        if (!readed) {
+            sos.forEach(so -> {
+                if (!so.isStructureSpecialChar()) {
+                    pattern_logic.append(so.getPattern() != null ? so.getPattern().pattern() : null);
+                }
+            });
+        } else {
+            pattern_logic.append("(.*)");
+        }
         pattern_logic
                 .append(getCloseChar())
                 .append(Symbol.CLOSE_BLOCK);
-        p = Pattern.compile(pattern_logic.toString());
+        p = Pattern.compile(pattern_logic.toString(), Pattern.DOTALL);
         return p;
     }
 
@@ -259,11 +270,12 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     }
 
     public ContainerGroup readData(String data) {
-        if (data != null && data.matches(p.pattern())) {
+        if (data != null && data.matches(getPattern().pattern())) {
             Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
                     + "CG#HC\\?([^"
                     + Symbol.CLOSE_BLOCK
-                    + "]*)\\?");
+                    + Symbol.STRING_DEFINITION
+                    + "]*)\\?" + Symbol.STRING_DEFINITION);
             Pattern pattern = Pattern.compile("\\?\"(.*?)\"");
             Matcher matcher = pattern.matcher(data);
             Matcher match_1 = pattern_1.matcher(data);
@@ -276,17 +288,30 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
             }
             if (internal_datas != null && internal_datas.size() > 0) {
                 for (String datar : internal_datas) {
-                    Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "(.*?)#");
+                    Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "(.*?)#HC\\?([^" + Symbol.CLOSE_BLOCK + Symbol.STRING_DEFINITION + "]*)\\?" + Symbol.STRING_DEFINITION);
                     Matcher matcher_2 = pattern_2.matcher(datar);
                     if (matcher_2.find()) {
                         String block_name = matcher_2.group(1);
+                        String block_hash = matcher_2.group(2);
+                        StructureObject so = readed_Objects.get(block_hash);
                         switch (block_name) {
                             case "CG":
-                                ContainerGroup cg = new ContainerGroup();
-                                cg
-                                        .readData(datar);
+                                if (so != null) {
+                                    ContainerGroup cg = (ContainerGroup) so;
+                                    if (cg.checkHash(block_hash)) {
+                                        cg.readData(datar);
+                                        sos.add(cg);
+                                    }
+                                }
                                 break;
                             case "DH":
+                                if (so != null) {
+                                    DataHolder dh = (DataHolder) so;
+                                    if (dh.checkHash(block_hash)) {
+                                        dh.readData(datar);
+                                        sos.add(so);
+                                    }
+                                }
                                 break;
                         }
                     }
@@ -313,20 +338,20 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     }
 
     public String exctractData(String dt) {
-        if (dt.matches(getPattern().pattern())) {
-            Pattern pattern = Pattern.compile(getOpenChar() + "(.?)*" + getCloseChar());
+        if (dt.matches(p.pattern())) {
+            Pattern pattern = Pattern.compile(Symbol.STRING_DEFINITION + getOpenChar() + "(.*)" + getCloseChar());
             Matcher m = pattern.matcher(dt);
             if (m.find()) {
-                String s = m.group();
+                String s = m.group(1);
                 return s;
             }
         }
         return null;
     }
 
-    public ArrayList<String> parseData(String dt) {
+    private ArrayList<String> parseData(String dt) {
         dt = exctractData(dt);
-        dt = dt.substring(1, dt.length() - 1);
+//        dt = dt.substring(1, dt.length() - 1);
         if (dt != null && !dt.isEmpty()) {
             ArrayList<String> arr = new ArrayList<>();
             Stack<Character> open_close = new Stack<>();
