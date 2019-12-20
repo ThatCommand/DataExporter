@@ -222,6 +222,7 @@ public class DataHolder implements StructureObject, DataSettings {
      *
      * @param so
      * @return
+     * @deprecated
      */
     @Override
     public StructureObject addStructureObject(StructureObject so) {
@@ -237,6 +238,7 @@ public class DataHolder implements StructureObject, DataSettings {
      *
      * @param so
      * @return
+     * @deprecated
      */
     @Override
     public StructureObject removeStructureObject(StructureObject so) {
