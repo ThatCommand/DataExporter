@@ -89,62 +89,62 @@ public class RunTests {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-//        DataHolder dh = new DataHolder();
-//        dh
-//                .setVariableName("ATestNomeVar")
-//                .setAssignSymbol(new Symbol(':'))
-//                .setSeparator(new Separator(';'))
-//                .setData("testo 1", 2143.56, 3575, 45f, true, (short) 120000, (long) 999999999);
-//        DataHolder dh2 = new DataHolder();
-//        dh2
-//                .setVariableName("BTestNomeVar2")
-//                .setAssignSymbol(new Symbol('='))
-////                .setSeparator(new Separator('%'))
-//                .setData("testo 2");
-//        DataHolder dh3 = new DataHolder();
-//        dh3
-//                .setVariableName("CTestNomeVar3")
-//                .setAssignSymbol(new Symbol('§'))
-////                .setSeparator(new Separator('$'))
-//                .setData("testo 3");
-//        DataHolder dh4 = new DataHolder();
-//        dh4
-//                .setVariableName("DTestNomeVar4")
-//                .setAssignSymbol(new Symbol('§'))
-////                .setSeparator(new Separator('$'))
-//                .setData("testo 4");
-//        DataHolder dh5 = new DataHolder();
-//        dh5
-//                .setVariableName("ETestNomeVar5")
-//                .setAssignSymbol(new Symbol('§'))
-////                .setSeparator(new Separator('$'))
-//                .setData("testo 5");
-//        ContainerGroup cg2 = new ContainerGroup();
-//        cg2
-//                .setGroupName("FTestNomeGruppo2")
-//                .addStructureObject(dh3)
-//                .addStructureObject(dh5);
-//        ContainerGroup cg = new ContainerGroup();
-//        cg
-//                .setGroupName("GTest\nNome\nGruppo")
-//                .addStructureObject(dh)
-//                .addStructureObject(dh2)
-//                .addStructureObject(cg2);
-//
-//        Structure s = new Structure();
-//        s.addStructureObject(cg).addStructureObject(dh4);
-//
-//        Writer w = new Writer();
-//        File f
-//                = w
-//                .setEncoding(Encoding.ENCODINGS.UTF_16)
-//                .setFilename(new FileName("Example"))
-//                .setText(s.getStructure())
-//                .setExtension(new Extension("Writing exemple file"))
-//                .setDestination("C:\\Users\\gabri\\Desktop\\").write();
-////            RunTests rt=new RunTests();
-////            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
-////            rt.decrypt("BAZZUORD90123456", new File(f.getAbsolutePath()+".encp"),new File(f.getAbsolutePath()+".decp"));
+        DataHolder dh = new DataHolder();
+        dh
+                .setVariableName("ATestNomeVar")
+                .setAssignSymbol(new Symbol(':'))
+                .setSeparator(new Separator(';'))
+                .setData("testo 1", 2143.56, 3575, 45f, true, (short) 120000, (long) 999999999);
+        DataHolder dh2 = new DataHolder();
+        dh2
+                .setVariableName("BTestNomeVar2")
+                .setAssignSymbol(new Symbol('='))
+//                .setSeparator(new Separator('%'))
+                .setData("testo 2");
+        DataHolder dh3 = new DataHolder();
+        dh3
+                .setVariableName("CTestNomeVar3")
+                .setAssignSymbol(new Symbol('§'))
+//                .setSeparator(new Separator('$'))
+                .setData("testo 3");
+        DataHolder dh4 = new DataHolder();
+        dh4
+                .setVariableName("DTestNomeVar4")
+                .setAssignSymbol(new Symbol('§'))
+//                .setSeparator(new Separator('$'))
+                .setData("testo 4");
+        DataHolder dh5 = new DataHolder();
+        dh5
+                .setVariableName("ETestNomeVar5")
+                .setAssignSymbol(new Symbol('§'))
+//                .setSeparator(new Separator('$'))
+                .setData("testo 5");
+        ContainerGroup cg2 = new ContainerGroup();
+        cg2
+                .setGroupName("FTestNomeGruppo2")
+                .addStructureObject(dh3)
+                .addStructureObject(dh5);
+        ContainerGroup cg = new ContainerGroup();
+        cg
+                .setGroupName("GTest\nNome\nGruppo")
+                .addStructureObject(dh)
+                .addStructureObject(dh2)
+                .addStructureObject(cg2);
+
+        Structure s = new Structure();
+        s.addStructureObject(cg).addStructureObject(dh4);
+
+        Writer w = new Writer();
+        File f
+                = w
+                .setEncoding(Encoding.ENCODINGS.UTF_16)
+                .setFilename(new FileName("Example"))
+                .setText(s.getStructure())
+                .setExtension(new Extension("Writing exemple file"))
+                .setDestination("C:\\Users\\gabri\\Desktop\\").write();
+//            RunTests rt=new RunTests();
+//            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
+//            rt.decrypt("BAZZUORD90123456", new File(f.getAbsolutePath()+".encp"),new File(f.getAbsolutePath()+".decp"));
 
         Reader r = new Reader();
         r

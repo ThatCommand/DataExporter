@@ -23,7 +23,7 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     Separator sep = new Separator(';');
     Symbol open_char = new Symbol('[');
     Symbol close_char = new Symbol(']');
-    String group_name;
+    private String group_name;
 
     private final static String tmp_VarName = "ContainerGroup_VARNAME";
     private final static String tmp_Holdable = "ContainerGroup_HOLDABLE";
@@ -121,6 +121,14 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
             this.group_name = name.replaceAll("\n", Symbol.SLASH_N);
         }
         return this;
+    }
+
+    public String getGroupName() {
+        if (group_name != null) {
+            return group_name.replaceAll(Symbol.SLASH_N, "\n");
+        } else {
+            return group_name;
+        }
     }
 
     @Override
@@ -421,6 +429,13 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     @Override
     public String getHash() {
         return hash.toString();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"").append(getGroupName()).append("\"");
+        return sb.toString();
     }
 
 }

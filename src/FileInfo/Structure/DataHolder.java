@@ -73,8 +73,8 @@ public class DataHolder implements StructureObject, DataSettings {
     public DataHolder(String hash, char sepatator, char assign) {
         super();
         this.hash.append(hash);
-        multiple_separator = new Separator(sepatator);
-        assign_symb = new Symbol(assign);
+        setSeparator(new Separator(sepatator));
+        setAssignSymbol(new Symbol(assign));
     }
 
     @Override
@@ -307,7 +307,7 @@ public class DataHolder implements StructureObject, DataSettings {
      * @param assign_simbol
      * @return
      */
-    public DataHolder setAssignSymbol(Symbol assign_simbol) {
+    public final DataHolder setAssignSymbol(Symbol assign_simbol) {
         if (!String.valueOf(Symbol.protected_symbols).contains("" + assign_simbol.getSymbol())) {
             assign_symb = assign_simbol;
         } else {
@@ -328,7 +328,7 @@ public class DataHolder implements StructureObject, DataSettings {
      * @param multiple_data_holding
      * @return
      */
-    public DataHolder setSeparator(Separator multiple_data_holding) {
+    public final DataHolder setSeparator(Separator multiple_data_holding) {
         if (!String.valueOf(Symbol.protected_symbols).contains("" + multiple_data_holding.getSymbol())) {
             if (multiple_data_holding.c == (char) 0) {
                 multiple_separator = null;
@@ -422,7 +422,7 @@ public class DataHolder implements StructureObject, DataSettings {
                     + Symbol.STRING_DEFINITION
                     + "]*)\\?");
             Pattern pattern = Pattern.compile("\\?" + Symbol.STRING_DEFINITION + "(.*?)" + Symbol.STRING_DEFINITION);
-            Pattern pattern_2 = Pattern.compile(this.assign_symb.getSymbol() + "\\((.*?)\\)" + Symbol.CLOSE_BLOCK);
+            Pattern pattern_2 = Pattern.compile(this.assign_symb.getSymbol() + (multiple_separator != null ? "\\(([^" + Symbol.CLOSE_BLOCK + "]*)\\)": "([^" + Symbol.CLOSE_BLOCK + "]*)") + Symbol.CLOSE_BLOCK);
             Matcher match_1 = pattern_1.matcher(data);
             Matcher matcher = pattern.matcher(data);
             Matcher match_2 = pattern_2.matcher(data);
