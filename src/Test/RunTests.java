@@ -129,15 +129,10 @@ public class RunTests {
                 .setGroupName("GTest\nNome\nGruppo")
                 .addStructureObject(dh)
                 .addStructureObject(dh2)
-                .addStructureObject(cg2)
-                .addStructureObject(dh4);
+                .addStructureObject(cg2);
 
-//        ContainerGroup new_cg = new ContainerGroup();
-//        new_cg.setPattern(cg.getPattern());
-//        String str = cg.getData().replaceAll("\n|\t|\r", "");;
-//        new_cg.readData(str);
         Structure s = new Structure();
-        s.addStructureObject(cg);
+        s.addStructureObject(cg).addStructureObject(dh4);
 
         Writer w = new Writer();
         File f
