@@ -142,28 +142,28 @@ public class DataHolder implements StructureObject, DataSettings {
                         finale = finale.replaceAll(tmp_SingleVar, ((HandableDataObject) st_dt).getFormattedData());
                         break;
                     } else if (st_dt instanceof String) {
-                        finale = Symbol.DLE + Symbol.DATA_STRING + finale.replaceAll(tmp_SingleVar, (String) st_dt).replaceAll("\n", Symbol.SLASH_N);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_STRING + (String) st_dt).replaceAll("\n", Symbol.SLASH_N);
                         break;
                     } else if (st_dt instanceof Integer) {
-                        finale = Symbol.DLE + Symbol.DATA_INTEGER + finale.replaceAll(tmp_SingleVar, "" + (int) st_dt);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_INTEGER + (int) st_dt);
                         break;
                     } else if (st_dt instanceof Double) {
-                        finale = Symbol.DLE + Symbol.DATA_DOUBLE + finale.replaceAll(tmp_SingleVar, "" + (double) st_dt);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_DOUBLE + (double) st_dt);
                         break;
                     } else if (st_dt instanceof Float) {
-                        finale = Symbol.DLE + Symbol.DATA_FLOAT + finale.replaceAll(tmp_SingleVar, (float) st_dt + "f");
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_FLOAT + (float) st_dt + "f");
                         break;
                     } else if (st_dt instanceof Short) {
-                        finale = Symbol.DLE + Symbol.DATA_SHORT + finale.replaceAll(tmp_SingleVar, "" + (short) st_dt);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_SHORT + (short) st_dt);
                         break;
                     } else if (st_dt instanceof Long) {
-                        finale = Symbol.DLE + Symbol.DATA_LONG + finale.replaceAll(tmp_SingleVar, "" + (long) st_dt);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_LONG + (long) st_dt);
                         break;
                     } else if (st_dt instanceof Boolean) {
-                        finale = Symbol.DLE + Symbol.DATA_BOOLEAN + finale.replaceAll(tmp_SingleVar, "" + (boolean) st_dt);
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_BOOLEAN + (boolean) st_dt);
                         break;
                     } else if (st_dt instanceof Object) {
-                        finale = Symbol.DLE + Symbol.DATA_OBJECT + finale.replaceAll(tmp_SingleVar, ((Object) st_dt).toString());
+                        finale = finale.replaceAll(tmp_SingleVar, Symbol.DLE + Symbol.DATA_OBJECT + ((Object) st_dt).toString());
                         break;
                     }
                 }
@@ -193,7 +193,7 @@ public class DataHolder implements StructureObject, DataSettings {
                     .append(Symbol.STRING_DEFINITION)
                     .append(assign_symb.getSymbol());
             FormattedData.append((multiple_separator != null ? open_data_container.getSymbol() : ""));
-            FormattedData.append((multiple_separator != null ? tmp_MultipleVar : tmp_SingleVar));
+            FormattedData.append((multiple_separator != null ? multiple_separator.c != (char) 0 ? tmp_MultipleVar : tmp_SingleVar : tmp_SingleVar));
             FormattedData.append((multiple_separator != null ? close_data_container.getSymbol() : ""));
         }
     }
@@ -330,7 +330,11 @@ public class DataHolder implements StructureObject, DataSettings {
      */
     public DataHolder setSeparator(Separator multiple_data_holding) {
         if (!String.valueOf(Symbol.protected_symbols).contains("" + multiple_data_holding.getSymbol())) {
-            multiple_separator = multiple_data_holding;
+            if (multiple_data_holding.c == (char) 0) {
+                multiple_separator = null;
+            } else {
+                multiple_separator = multiple_data_holding;
+            }
         } else {
             acceptable = false;
         }
@@ -415,8 +419,9 @@ public class DataHolder implements StructureObject, DataSettings {
             Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
                     + "DH#HC\\?([^"
                     + Symbol.CLOSE_BLOCK
+                    + Symbol.STRING_DEFINITION
                     + "]*)\\?");
-            Pattern pattern = Pattern.compile("\\?\"(.*?)\"");
+            Pattern pattern = Pattern.compile("\\?" + Symbol.STRING_DEFINITION + "(.*?)" + Symbol.STRING_DEFINITION);
             Pattern pattern_2 = Pattern.compile(this.assign_symb.getSymbol() + "\\((.*?)\\)" + Symbol.CLOSE_BLOCK);
             Matcher match_1 = pattern_1.matcher(data);
             Matcher matcher = pattern.matcher(data);
