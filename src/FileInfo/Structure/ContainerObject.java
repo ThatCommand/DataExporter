@@ -5,6 +5,7 @@
  */
 package FileInfo.Structure;
 
+import exceptions.IllegalCharacterException;
 import java.util.ArrayList;
 import javafx.scene.text.Text;
 
@@ -18,6 +19,8 @@ import javafx.scene.text.Text;
  * Check {@link Text https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
  * }
  * @
+ *
+ *
  *
  *
  *
@@ -37,8 +40,9 @@ public interface ContainerObject {
      * @param <T>
      * @param sep
      * @return
+     * @throws exceptions.IllegalCharacterException
      */
-    public <T> T defineSeparator(Separator sep);
+    public <T> T defineSeparator(Separator sep) throws IllegalCharacterException;
 
     /**
      * IT<p>
@@ -80,6 +84,5 @@ public interface ContainerObject {
      */
     public <R> R defineSymbolGroup(Symbol open, Symbol close);
 
-    
     public ArrayList<StructureObject> getObjects();
 }

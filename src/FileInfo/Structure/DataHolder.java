@@ -5,6 +5,9 @@
  */
 package FileInfo.Structure;
 
+import exceptions.IllegalCharacterException;
+import exceptions.NullDataException;
+import exceptions.PatternUnmatchException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -70,7 +73,7 @@ public class DataHolder implements StructureObject, DataSettings {
         gen_Hash();
     }
 
-    public DataHolder(String hash, char sepatator, char assign) {
+    public DataHolder(String hash, char sepatator, char assign) throws IllegalCharacterException {
         super();
         this.hash.append(hash);
         setSeparator(new Separator(sepatator));
@@ -102,7 +105,7 @@ public class DataHolder implements StructureObject, DataSettings {
                         vars.append(multiple_separator.getSeparatorChar());
                     } else if (st_dt instanceof String) {
                         vars.append(Symbol.DLE).append(Symbol.DATA_STRING);
-                        vars.append(((String) st_dt).replaceAll(multiple_separator.getData(), "").replaceAll("\n", Symbol.SLASH_N));
+                        vars.append(((String) st_dt).replaceAll(multiple_separator.getData(), Symbol.PRIVATE_CHAR_REPLACE).replaceAll("\n", Symbol.SLASH_N).replaceAll("\t", Symbol.SLASH_T).replaceAll("\r", Symbol.SLASH_R));
                         vars.append(multiple_separator.getSeparatorChar());
                     } else if (st_dt instanceof Integer) {
                         vars.append(Symbol.DLE).append(Symbol.DATA_INTEGER);
@@ -173,6 +176,10 @@ public class DataHolder implements StructureObject, DataSettings {
             return finale;
         }
         return null;
+    }
+
+    public Object[] getStoredData() {
+        return stored_data;
     }
 
     @Override
@@ -306,12 +313,18 @@ public class DataHolder implements StructureObject, DataSettings {
      *
      * @param assign_simbol
      * @return
+     * @throws exceptions.IllegalCharacterException
      */
-    public final DataHolder setAssignSymbol(Symbol assign_simbol) {
-        if (!String.valueOf(Symbol.protected_symbols).contains("" + assign_simbol.getSymbol())) {
-            assign_symb = assign_simbol;
+    public final DataHolder setAssignSymbol(Symbol assign_simbol) throws IllegalCharacterException {
+        if (assign_simbol != null) {
+            if (!String.valueOf(Symbol.protected_symbols).contains("" + assign_simbol.getSymbol())) {
+                assign_symb = assign_simbol;
+            } else {
+                acceptable = false;
+                throw new IllegalCharacterException(assign_simbol.getSymbol());
+            }
         } else {
-            acceptable = false;
+            assign_symb = null;
         }
         return this;
     }
@@ -327,16 +340,22 @@ public class DataHolder implements StructureObject, DataSettings {
      *
      * @param multiple_data_holding
      * @return
+     * @throws exceptions.IllegalCharacterException
      */
-    public final DataHolder setSeparator(Separator multiple_data_holding) {
-        if (!String.valueOf(Symbol.protected_symbols).contains("" + multiple_data_holding.getSymbol())) {
-            if (multiple_data_holding.c == (char) 0) {
-                multiple_separator = null;
+    public final DataHolder setSeparator(Separator multiple_data_holding) throws IllegalCharacterException {
+        if (multiple_data_holding != null) {
+            if (!String.valueOf(Symbol.protected_symbols).contains("" + multiple_data_holding.getSymbol())) {
+                if (multiple_data_holding.c == (char) 000) {
+                    multiple_separator = null;
+                } else {
+                    multiple_separator = multiple_data_holding;
+                }
             } else {
-                multiple_separator = multiple_data_holding;
+                acceptable = false;
+                throw new IllegalCharacterException(multiple_data_holding.getSeparatorChar());
             }
         } else {
-            acceptable = false;
+            multiple_separator = null;
         }
         return this;
     }
@@ -415,107 +434,120 @@ public class DataHolder implements StructureObject, DataSettings {
      * @return
      */
     public DataHolder readData(String data) {
-        if (data != null && data.matches(getPattern().pattern())) {
-            Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
-                    + "DH#HC\\?([^"
-                    + Symbol.CLOSE_BLOCK
-                    + Symbol.STRING_DEFINITION
-                    + "]*)\\?");
-            Pattern pattern = Pattern.compile("\\?" + Symbol.STRING_DEFINITION + "(.*?)" + Symbol.STRING_DEFINITION);
-            Pattern pattern_2 = Pattern.compile(this.assign_symb.getSymbol() + (multiple_separator != null ? "\\(([^" + Symbol.CLOSE_BLOCK + "]*)\\)": "([^" + Symbol.CLOSE_BLOCK + "]*)") + Symbol.CLOSE_BLOCK);
-            Matcher match_1 = pattern_1.matcher(data);
-            Matcher matcher = pattern.matcher(data);
-            Matcher match_2 = pattern_2.matcher(data);
-            if (matcher.find()) {//nome variabile
-                setVariableName(matcher.group(1));
-            }
-            if (match_1.find()) {
-                hash = new StringBuilder(match_1.group(1));
-            }
-            if (match_2.find()) {
-                String str_dt = match_2.group(1);
-                String[] arr = (multiple_separator != null ? str_dt.split(multiple_separator.getData()) : new String[]{str_dt});
-                ArrayList<Object> lista = new ArrayList<>();
-                for (String selected_data : arr) {
-                    String datas = selected_data;
-                    boolean continue_ = true;
-                    int selected_char = 0;
-                    StringBuilder data_type = new StringBuilder();
-                    if (datas.charAt(selected_char) == Symbol.DLE) {
-                        datas = datas.replaceAll("" + Symbol.DLE, "");
-                    } else {
-                        continue_ = false;
-                    }
-                    while (continue_) {
-                        switch (datas.charAt(selected_char)) {
-                            case Symbol.NAK:
-                                data_type.append(datas.charAt(selected_char));
-                                selected_char++;
-                                break;
-                            case Symbol.SYN:
-                                data_type.append(datas.charAt(selected_char));
-                                selected_char++;
-                                break;
-                            case Symbol.DC1:
-                            case Symbol.DC2:
-                            case Symbol.DC3:
-                            case Symbol.DC4:
-                                if (selected_char > 0 && (data_type.toString() == null ? "" + Symbol.SYN == null : data_type.toString().equals("" + Symbol.SYN))) {
+        if (data != null) {
+            if (data.matches(getPattern().pattern())) {
+                Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
+                        + "DH#HC\\?([^"
+                        + Symbol.CLOSE_BLOCK
+                        + Symbol.STRING_DEFINITION
+                        + "]*)\\?");
+                Pattern pattern = Pattern.compile("\\?" + Symbol.STRING_DEFINITION + "(.*?)" + Symbol.STRING_DEFINITION);
+                Pattern pattern_2 = Pattern.compile(this.assign_symb.getSymbol() + (multiple_separator != null ? "\\(([^" + Symbol.CLOSE_BLOCK + "]*)\\)" : "([^" + Symbol.CLOSE_BLOCK + "]*)") + Symbol.CLOSE_BLOCK);
+                Matcher match_1 = pattern_1.matcher(data);
+                Matcher matcher = pattern.matcher(data);
+                Matcher match_2 = pattern_2.matcher(data);
+                if (matcher.find()) {//nome variabile
+                    setVariableName(matcher.group(1));
+                } else {
+                    throw new PatternUnmatchException();
+                }
+                if (match_1.find()) {
+                    hash = new StringBuilder(match_1.group(1));
+                } else {
+                    throw new PatternUnmatchException();
+                }
+                if (match_2.find()) {
+                    String str_dt = match_2.group(1);
+                    String[] arr = (multiple_separator != null ? str_dt.split(multiple_separator.getData()) : new String[]{str_dt});
+                    ArrayList<Object> lista = new ArrayList<>();
+                    for (String selected_data : arr) {
+                        String datas = selected_data;
+                        boolean continue_ = true;
+                        int selected_char = 0;
+                        StringBuilder data_type = new StringBuilder();
+                        if (datas.charAt(selected_char) == Symbol.DLE) {
+                            datas = datas.replaceAll("" + Symbol.DLE, "");
+                        } else {
+                            continue_ = false;
+                        }
+                        while (continue_) {
+                            switch (datas.charAt(selected_char)) {
+                                case Symbol.NAK:
+                                    data_type.append(datas.charAt(selected_char));
+                                    selected_char++;
+                                    break;
+                                case Symbol.SYN:
+                                    data_type.append(datas.charAt(selected_char));
+                                    selected_char++;
+                                    break;
+                                case Symbol.DC1:
+                                case Symbol.DC2:
+                                case Symbol.DC3:
+                                case Symbol.DC4:
+                                    if (selected_char > 0 && (data_type.toString() == null ? "" + Symbol.SYN == null : data_type.toString().equals("" + Symbol.SYN))) {
+                                        continue_ = false;
+                                    }
+                                    data_type.append(datas.charAt(selected_char));
+                                    selected_char++;
+                                    break;
+                                case Symbol.NUL:
                                     continue_ = false;
-                                }
-                                data_type.append(datas.charAt(selected_char));
-                                selected_char++;
+                                    data_type.append(datas.charAt(selected_char));
+                                    break;
+                                default:
+                                    continue_ = false;
+                                    break;
+                            }
+                        }
+                        String dt = datas.replace(data_type.toString(), "");
+                        if (multiple_separator != null) {
+                            dt = dt.replaceAll(Symbol.PRIVATE_CHAR_REPLACE, multiple_separator.getData());
+                        }
+                        switch (data_type.toString()) {
+                            case Symbol.DATA_BOOLEAN:
+                                lista.add(Boolean.valueOf(dt));
                                 break;
-                            case Symbol.NUL:
-                                continue_ = false;
-                                data_type.append(datas.charAt(selected_char));
+                            case Symbol.DATA_CHAR:
+                                lista.add(dt != null ? dt.charAt(0) : (char) 000);
+                                break;
+                            case Symbol.DATA_DATE:
+                                lista.add(Date.valueOf(dt));
+                                break;
+                            case Symbol.DATA_DOUBLE:
+                                lista.add(Double.parseDouble(dt));
+                                break;
+                            case Symbol.DATA_FLOAT:
+                                lista.add(Float.parseFloat(dt));
+                                break;
+                            case Symbol.DATA_INTEGER:
+                                lista.add(Integer.parseInt(dt));
+                                break;
+                            case Symbol.DATA_LONG:
+                                lista.add(Long.parseLong(dt));
+                                break;
+                            case Symbol.DATA_OBJECT:
+                                lista.add((Object) dt + " | UNKNOWN OBJ");
+                                break;
+                            case Symbol.DATA_SHORT:
+                                lista.add(Short.parseShort(dt));
+                                break;
+                            case Symbol.DATA_STRING:
+                                lista.add(dt.replaceAll(Symbol.SLASH_N, "\n").replaceAll(Symbol.SLASH_R, "\r").replaceAll(Symbol.SLASH_T, "\t"));
                                 break;
                             default:
-                                continue_ = false;
                                 break;
                         }
                     }
-                    String dt = datas.replace(data_type.toString(), "");
-                    switch (data_type.toString()) {
-                        case Symbol.DATA_BOOLEAN:
-                            lista.add(Boolean.valueOf(dt));
-                            break;
-                        case Symbol.DATA_CHAR:
-                            lista.add(dt != null ? dt.charAt(0) : (char) 000);
-                            break;
-                        case Symbol.DATA_DATE:
-                            lista.add(Date.valueOf(dt));
-                            break;
-                        case Symbol.DATA_DOUBLE:
-                            lista.add(Double.parseDouble(dt));
-                            break;
-                        case Symbol.DATA_FLOAT:
-                            lista.add(Float.parseFloat(dt));
-                            break;
-                        case Symbol.DATA_INTEGER:
-                            lista.add(Integer.parseInt(dt));
-                            break;
-                        case Symbol.DATA_LONG:
-                            lista.add(Long.parseLong(dt));
-                            break;
-                        case Symbol.DATA_OBJECT:
-                            lista.add((Object) dt + " | UNKNOWN OBJ");
-                            break;
-                        case Symbol.DATA_SHORT:
-                            lista.add(Short.parseShort(dt));
-                            break;
-                        case Symbol.DATA_STRING:
-                            lista.add(dt);
-                            break;
-                        default:
-                            break;
+                    stored_data = new Object[lista.size()];
+                    for (int i = 0; i < lista.size(); i++) {
+                        stored_data[i] = lista.get(i);
                     }
                 }
-                stored_data = new Object[lista.size()];
-                for (int i = 0; i < lista.size(); i++) {
-                    stored_data[i] = lista.get(i);
-                }
+            } else {
+                throw new PatternUnmatchException();
             }
+        } else {
+            throw new NullDataException();
         }
         return this;
     }

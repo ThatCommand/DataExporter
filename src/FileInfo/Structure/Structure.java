@@ -5,6 +5,9 @@
  */
 package FileInfo.Structure;
 
+import exceptions.IllegalCharacterException;
+import exceptions.NullDataException;
+import exceptions.PatternUnmatchException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -160,7 +163,7 @@ public class Structure implements ContainerObject, DataSettings {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public void read(Reader r) {
+    public void read(Reader r) throws IllegalCharacterException, Exception {
         if (r != null) {
             r.read();
             String definitions = r.getDefs();
@@ -178,21 +181,38 @@ public class Structure implements ContainerObject, DataSettings {
                     char cl = 0;
                     char ass = 0;
                     for (String key : asd.keySet()) {
+                        String asd_ = asd.get(key);
                         switch (key) {
                             case "HASH":
-                                hash = asd.get(key);
+                                hash = asd_;
                                 break;
                             case "SEPARATOR":
-                                sepe = asd.get(key).charAt(0);
+                                if (asd_ == null || asd_.isEmpty()) {
+                                    sepe = (char) 000;
+                                } else {
+                                    sepe = asd_.charAt(0);
+                                }
                                 break;
                             case "OPEN":
-                                op = asd.get(key).charAt(0);
+                                if (asd_ == null || asd_.isEmpty()) {
+                                    op = (char) 000;
+                                } else {
+                                    op = asd_.charAt(0);
+                                }
                                 break;
                             case "CLOSE":
-                                cl = asd.get(key).charAt(0);
+                                if (asd_ == null || asd_.isEmpty()) {
+                                    cl = (char) 000;
+                                } else {
+                                    cl = asd_.charAt(0);
+                                }
                                 break;
                             case "ASSIGN":
-                                ass = asd.get(key).charAt(0);
+                                if (asd_ == null || asd_.isEmpty()) {
+                                    ass = (char) 000;
+                                } else {
+                                    ass = asd_.charAt(0);
+                                }
                                 break;
                             default:
                                 break;
@@ -213,44 +233,60 @@ public class Structure implements ContainerObject, DataSettings {
                 }
                 String datas = r.getFile();
                 readData(datas);
+            } else {
+                throw new PatternUnmatchException();
             }
         }
     }
 
-    public Structure readData(String data) {
-        if (data != null && data.matches(getPattern2().pattern())) {
-            ArrayList<String> internal_datas = parseData(data);
-            if (internal_datas != null && internal_datas.size() > 0) {
-                for (String datar : internal_datas) {
-                    Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "([^" + Symbol.CLOSE_BLOCK + "]{2})#HC\\?([^" + Symbol.CLOSE_BLOCK + Symbol.STRING_DEFINITION + "]*)\\?" + Symbol.STRING_DEFINITION);
-                    Matcher matcher_2 = pattern_2.matcher(datar);
-                    if (matcher_2.find()) {
-                        String block_name = matcher_2.group(1);
-                        String block_hash = matcher_2.group(2);
-                        StructureObject so = readed_Objects.get(block_hash);
-                        switch (block_name) {
-                            case "CG":
-                                if (so != null) {
-                                    ContainerGroup cg = (ContainerGroup) so;
-                                    if (cg.checkHash(block_hash)) {
-                                        cg.readData(datar);
-                                        structure.add(cg);
+    public Structure readData(String data) throws Exception {
+        if (data != null) {
+            if (data.matches(getPattern2().pattern())) {
+                ArrayList<String> internal_datas = parseData(data);
+                if (internal_datas != null && internal_datas.size() > 0) {
+                    for (String datar : internal_datas) {
+                        Pattern pattern_2 = Pattern.compile(Symbol.OPEN_BLOCK + "([^" + Symbol.CLOSE_BLOCK + "]{2})#HC\\?([^" + Symbol.CLOSE_BLOCK + Symbol.STRING_DEFINITION + "]*)\\?" + Symbol.STRING_DEFINITION);
+                        Matcher matcher_2 = pattern_2.matcher(datar);
+                        if (matcher_2.find()) {
+                            String block_name = matcher_2.group(1);
+                            String block_hash = matcher_2.group(2);
+                            StructureObject so = readed_Objects.get(block_hash);
+                            switch (block_name) {
+                                case "CG":
+                                    if (so != null) {
+                                        ContainerGroup cg = (ContainerGroup) so;
+                                        if (cg.checkHash(block_hash)) {
+                                            cg.readData(datar);
+                                            structure.add(cg);
+                                        }
                                     }
-                                }
-                                break;
-                            case "DH":
-                                if (so != null) {
-                                    DataHolder dh = (DataHolder) so;
-                                    if (dh.checkHash(block_hash)) {
-                                        dh.readData(datar);
-                                        structure.add(so);
+                                    break;
+                                case "DH":
+                                    if (so != null) {
+                                        DataHolder dh = (DataHolder) so;
+                                        if (dh.checkHash(block_hash)) {
+                                            dh.readData(datar);
+                                            structure.add(so);
+                                        }
                                     }
-                                }
-                                break;
+                                    break;
+                            }
+                        } else {
+                            throw new NullDataException();
                         }
                     }
+                } else {
+                    throw new NullDataException();
+                }
+            } else {
+                try {
+                    throw new PatternUnmatchException(this.getClass(), this.getClass().getMethod("readData", String.class));
+                } catch (NoSuchMethodException | SecurityException ex) {
+                    throw new Exception("Error in " + this.getClass().getName());
                 }
             }
+        } else {
+            throw new NullDataException();
         }
         return this;
     }
@@ -261,9 +297,12 @@ public class Structure implements ContainerObject, DataSettings {
             if (m.find()) {
                 String s = m.group(1);
                 return s;
+            } else {
+                throw new NullDataException();
             }
+        } else {
+            throw new PatternUnmatchException();
         }
-        return null;
     }
 
     private ArrayList<String> parseData(String dt) {
@@ -306,8 +345,9 @@ public class Structure implements ContainerObject, DataSettings {
             } else {
                 return null;
             }
+        } else {
+            throw new NullDataException();
         }
-        return null;
     }
 
     /**
@@ -335,6 +375,8 @@ public class Structure implements ContainerObject, DataSettings {
                 String Name = m_g.group(1);
                 String value = m_g.group(2);
                 hm.put(Name, value);
+            } else {
+                throw new NullDataException();
             }
         }
 

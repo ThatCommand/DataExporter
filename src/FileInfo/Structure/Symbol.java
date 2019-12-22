@@ -20,7 +20,7 @@ public class Symbol {
 
     char c;
 
-    public final static char[] protected_symbols = {'{', '}', '[', ']', '(', ')', '"', '\'', 027, 127, 001, 004};
+    public final static char[] protected_symbols = {'{', '}', '[', ']', '(', ')', '"', '\'', '.', 'f', 027, 127, 001, 004};
     public final static char STRING_DEFINITION = '"';
     public final static char OPEN_BLOCK = (char) 001;
     public final static char CLOSE_BLOCK = (char) 004;
@@ -269,6 +269,8 @@ public class Symbol {
      * Represent generic Object
      */
     public final static String DATA_OBJECT = "" + NAK + NAK + NUL;
+
+    public final static String PRIVATE_CHAR_REPLACE = "" + SYN + GS + DC4 + "" + NUL;
 
     public Symbol(int character) {
         c = (char) character;

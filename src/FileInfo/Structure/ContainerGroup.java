@@ -6,6 +6,7 @@
 package FileInfo.Structure;
 
 import static FileInfo.Structure.Structure.readed_Objects;
+import exceptions.IllegalCharacterException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -54,11 +55,11 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
         gen_Hash();
     }
 
-    public ContainerGroup(String hash, char sepatator, char open, char close) {
+    public ContainerGroup(String hash, char sepatator, char open, char close) throws IllegalCharacterException {
         this.hash.append(hash);
-        sep = new Separator(sepatator);
-        open_char = new Symbol(open);
-        close_char = new Symbol(close);
+        defineSeparator(new Separator(sepatator));
+        defineSymbolOpenGroup(new Symbol(open));
+        defineSymbolCloseGroup(new Symbol(close));
         readed = true;
     }
 
@@ -153,19 +154,28 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
     }
 
     @Override
-    public ContainerGroup defineSeparator(Separator sep) {
-        this.sep = sep;
+    public final ContainerGroup defineSeparator(Separator sep) throws IllegalCharacterException {
+        if (sep != null) {
+            if (!String.valueOf(Symbol.protected_symbols).contains("" + sep.getSymbol())) {
+                this.sep = sep;
+            } else {
+                acceptable = false;
+                throw new IllegalCharacterException(sep.getSeparatorChar());
+            }
+        } else {
+
+        }
         return this;
     }
 
     @Override
-    public ContainerGroup defineSymbolOpenGroup(Symbol sym) {
+    public final ContainerGroup defineSymbolOpenGroup(Symbol sym) {
         open_char = sym;
         return this;
     }
 
     @Override
-    public ContainerGroup defineSymbolCloseGroup(Symbol sym) {
+    public final ContainerGroup defineSymbolCloseGroup(Symbol sym) {
         close_char = sym;
         return this;
     }
