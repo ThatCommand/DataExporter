@@ -29,14 +29,19 @@ public class Structure implements ContainerObject, DataSettings {
 
     public static HashMap<String, StructureObject> readed_Objects;
 
-    Separator sep;
-    Symbol open_char;
-    Symbol close_char;
+    Separator sep;///non usato
+    Symbol open_char;//non usato
+    Symbol close_char;//non usato
 
     public Structure() {
 
     }
 
+    /**
+     * Non serve
+     *
+     * @return
+     */
     public Structure buildStructure() {
         building.setValue(Boolean.TRUE);
         return this;
@@ -67,30 +72,60 @@ public class Structure implements ContainerObject, DataSettings {
         return cg;
     }
 
+    /**
+     * Aggiunge automaticamente un nuovo DataHolder
+     *
+     * @return
+     */
     public DataHolder addDataHolder() {
         DataHolder dh = new DataHolder();
         structure.add(dh);
         return dh;
     }
 
+    /**
+     * Non serve
+     *
+     * @param sep
+     * @return
+     */
     @Override
     public Structure defineSeparator(Separator sep) {
         this.sep = sep;
         return this;
     }
 
+    /**
+     * Non serve
+     *
+     * @param sym
+     * @return
+     */
     @Override
     public Structure defineSymbolOpenGroup(Symbol sym) {
         open_char = sym;
         return this;
     }
 
+    /**
+     * Non serve
+     *
+     * @param sym
+     * @return
+     */
     @Override
     public Structure defineSymbolCloseGroup(Symbol sym) {
         close_char = sym;
         return this;
     }
 
+    /**
+     * Non serve
+     *
+     * @param open
+     * @param close
+     * @return
+     */
     @Override
     public Structure defineSymbolGroup(Symbol open, Symbol close) {
         open_char = open;
@@ -106,6 +141,11 @@ public class Structure implements ContainerObject, DataSettings {
         return close_char;
     }
 
+    /**
+     * Restituisce la strutture (il contenuto del file che deve essere scritto)
+     *
+     * @return
+     */
     public String getStructure() {
         StringBuilder sbs = new StringBuilder();
         sbs.append("{OPEN_SYS}");
@@ -120,6 +160,12 @@ public class Structure implements ContainerObject, DataSettings {
 
     ArrayList<String> dt_strs = new ArrayList<>();
 
+    /**
+     * "Raccoglie" l' HASH e le impostazioni dell' oggetto che estende la
+     * interfaccia {@link FileInfo.Structure.DataSetttings}
+     *
+     * @param o
+     */
     public void getDataSettings(Object o) {
         if (o instanceof DataSettings) {
             DataSettings so = (DataSettings) o;
@@ -133,6 +179,12 @@ public class Structure implements ContainerObject, DataSettings {
         }
     }
 
+    /**
+     * "Raccoglie" tutti gli HASH e le impostazioni di tutti gli oggetti che
+     * sono stati aggiunti a questa struttura.
+     *
+     * @return
+     */
     @Override
     public String getDataSettings() {
         StringBuilder sb = new StringBuilder();
@@ -148,6 +200,11 @@ public class Structure implements ContainerObject, DataSettings {
         return structure;
     }
 
+    /**
+     * LA struttura non ha hash
+     *
+     * @return
+     */
     @Override
     public String getHash() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -163,6 +220,17 @@ public class Structure implements ContainerObject, DataSettings {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
+    /**
+     * Deve essere passato un oggetto {@link reader.Reader} e questa funzione
+     * serve per caricare nell' HashMap gli hashes con i corrispettivi oggetti,
+     * caricati solo dei valori dei Separator e dei Symbol, e successivamente
+     * vengono chiamati i singoli oggetti e vengono passate le stringhe che
+     * devono leggere.
+     *
+     * @param r
+     * @throws IllegalCharacterException
+     * @throws Exception
+     */
     public void read(Reader r) throws IllegalCharacterException, Exception {
         if (r != null) {
             r.read();
@@ -239,7 +307,14 @@ public class Structure implements ContainerObject, DataSettings {
         }
     }
 
-    public Structure readData(String data) throws Exception {
+    /**
+     * Legge
+     *
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    private Structure readData(String data) throws Exception {
         if (data != null) {
             if (data.matches(getPattern2().pattern())) {
                 ArrayList<String> internal_datas = parseData(data);
@@ -307,7 +382,6 @@ public class Structure implements ContainerObject, DataSettings {
 
     private ArrayList<String> parseData(String dt) {
         dt = exctractData(dt);
-//        dt = dt.substring(1, dt.length() - 1);
         if (dt != null && !dt.isEmpty()) {
             ArrayList<String> arr = new ArrayList<>();
             Stack<Character> open_close = new Stack<>();
