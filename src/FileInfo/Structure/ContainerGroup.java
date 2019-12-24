@@ -9,6 +9,8 @@ import static FileInfo.Structure.Structure.readed_Objects;
 import exceptions.IllegalCharacterException;
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,12 +46,16 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
      */
     public ContainerGroup() {
         readed = false;
-        setGroupName("DATA_GROUP_" + lastnumbernamegroup);
+        try {
+            setGroupName("DATA_GROUP_" + lastnumbernamegroup);
+        } catch (IllegalCharacterException ex) {
+            Logger.getLogger(ContainerGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
         lastnumbernamegroup++;
         gen_Hash();
     }
 
-    public ContainerGroup(String groupName) {
+    public ContainerGroup(String groupName) throws IllegalCharacterException {
         readed = false;
         setGroupName(groupName);
         gen_Hash();
@@ -111,11 +117,13 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
      * @param name
      * @return
      */
-    public final ContainerGroup setGroupName(String name) {
+    public final ContainerGroup setGroupName(String name) throws IllegalCharacterException {
         boolean continuable = true;
         for (int i = 0; i < Symbol.protected_symbols.length; i++) {
             if (name.contains("" + Symbol.protected_symbols[i])) {
                 continuable = acceptable = false;
+            }else{
+                throw new IllegalCharacterException();
             }
         }
         if (continuable) {
@@ -287,7 +295,7 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
         return this.hash.toString().equals(hash);
     }
 
-    public ContainerGroup readData(String data) {
+    public ContainerGroup readData(String data) throws IllegalCharacterException {
         if (data != null && data.matches(getPattern().pattern())) {
             Pattern pattern_1 = Pattern.compile(Symbol.OPEN_BLOCK
                     + "CG#HC\\?([^"
