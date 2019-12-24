@@ -12,31 +12,33 @@ package FileInfo;
 public class FileName {
 
     protected String NAME;
+    protected String originalNAME;
 
     public FileName(String name) {
         NAME = name;
+        originalNAME = name;
         init();
     }
 
     public final void init() {
         if (NAME != null) {
-            NAME = NAME.replaceAll("\\*", "").replaceAll("\\.", "").replaceAll("\"", "").replaceAll("/", "").replaceAll("\\\\", "")
+            NAME = NAME.replaceAll("\\*", "").replaceAll("\"", "").replaceAll("/", "").replaceAll("\\\\", "")
                     .replaceAll("\\[", "").replaceAll("\\]", "")
                     .replaceAll(":", "").replaceAll(";", "").replaceAll("|", "").replaceAll(",", "");
             if (NAME.trim().isEmpty()) {
                 NAME = null;
+            } else if (NAME.contains(".")) {
+                NAME = NAME.substring(0, NAME.lastIndexOf("."));
             }
         }
     }
-    
-    public boolean isValid(){
-        return NAME!=null;
+
+    public boolean isValid() {
+        return NAME != null;
     }
 
     public String getNAME() {
         return NAME;
     }
 
-    
-    
 }

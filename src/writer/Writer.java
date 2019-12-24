@@ -38,6 +38,11 @@ public class Writer {
         return this;
     }
 
+    public Writer setDestination(File ds) {
+        destination = ds.getAbsolutePath().substring(0, ds.getAbsolutePath().lastIndexOf(File.separator));
+        return this;
+    }
+
     public Writer setEncoding(ENCODINGS en) {
         enc = en;
         return this;
