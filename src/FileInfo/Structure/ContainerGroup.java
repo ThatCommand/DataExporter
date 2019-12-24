@@ -116,13 +116,13 @@ public class ContainerGroup implements StructureObject, ContainerObject, DataSet
      *
      * @param name
      * @return
+     * @throws exceptions.IllegalCharacterException
      */
     public final ContainerGroup setGroupName(String name) throws IllegalCharacterException {
         boolean continuable = true;
         for (int i = 0; i < Symbol.protected_symbols.length; i++) {
             if (name.contains("" + Symbol.protected_symbols[i])) {
                 continuable = acceptable = false;
-            }else{
                 throw new IllegalCharacterException();
             }
         }
