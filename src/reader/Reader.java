@@ -43,6 +43,11 @@ public class Reader {
         return this;
     }
 
+    public Reader setDestination(File ds) {
+        destination = ds.getAbsolutePath().substring(0, ds.getAbsolutePath().lastIndexOf(File.separator));
+        return this;
+    }
+
     public Reader setEncoding(Encoding.ENCODINGS en) {
         enc = en;
         return this;

@@ -80,6 +80,10 @@ public class DataHolder implements StructureObject, DataSettings {
         setAssignSymbol(new Symbol(assign));
     }
 
+    public String getVariableName(){
+        return name;
+    }
+    
     @Override
     public final void gen_Hash() {
         hash
