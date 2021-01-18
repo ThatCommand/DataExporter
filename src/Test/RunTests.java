@@ -19,16 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import javax.management.openmbean.InvalidKeyException;
 import reader.Reader;
 import writer.Writer;
 
@@ -37,54 +29,6 @@ import writer.Writer;
  * @author ThatCommand
  */
 class RunTests {
-
-    private static final String ALGORITHM = "AES";
-    private static final String TRANSFORMATION = "AES";
-
-    public void encrypt(String key, File inputFile, File outputFile)
-            throws CryptoException {
-        doCrypto(Cipher.ENCRYPT_MODE, key, inputFile, outputFile);
-    }
-
-    public void decrypt(String key, File inputFile, File outputFile)
-            throws CryptoException {
-        doCrypto(Cipher.DECRYPT_MODE, key, inputFile, outputFile);
-    }
-
-    public class CryptoException extends Exception {
-
-        public CryptoException() {
-        }
-
-        public CryptoException(String message, Throwable throwable) {
-            super(message, throwable);
-        }
-    }
-
-    public void doCrypto(int cipherMode, String key, File inputFile,
-            File outputFile) throws CryptoException {
-        try {
-            Key secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(cipherMode, secretKey);
-
-            FileOutputStream outputStream;
-            try (FileInputStream inputStream = new FileInputStream(inputFile)) {
-                byte[] inputBytes = new byte[(int) inputFile.length()];
-                inputStream.read(inputBytes);
-                byte[] outputBytes = cipher.doFinal(inputBytes);
-                outputStream = new FileOutputStream(outputFile);
-                outputStream.write(outputBytes);
-            }
-            outputStream.close();
-
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | IOException ex) {
-            throw new CryptoException("Error encrypting/decrypting file", ex);
-        } catch (java.security.InvalidKeyException ex) {
-            Logger.getLogger(RunTests.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -135,24 +79,12 @@ class RunTests {
         Structure s1 = new Structure();
         s1.addStructureObject(cg).addStructureObject(dh4);
 
-//        Writer w = new Writer();
-//        File f
-//                = w
-//                .setEncoding(Encoding.ENCODINGS.UTF_16)
-//                .setFilename(new FileName("Example"))
-//                .setText(s1.getStructure())
-//                .setExtension(new Extension("Writing exemple file"))
-//                .setDestination("C:\\Users\\gabri\\Desktop\\").write();
-//            RunTests rt=new RunTests();
-//            rt.encrypt("BAZZUORD90123456", f,new File(f.getAbsolutePath()+".encp"));
-//            rt.decrypt("BAZZUORD90123456", new File(f.getAbsolutePath()+".encp"),new File(f.getAbsolutePath()+".decp"));
-
         Reader r = new Reader();
         r
                 .setEncoding(Encoding.ENCODINGS.UTF_16)
                 .setFilename(new FileName("Example"))
                 .setExtension(new Extension("Writing exemple file"))
-                .setDestination("C:\\Users\\gabri\\Desktop\\").read();
+                .setDestination("C:\\Users\\public\\Desktop\\").read();
 
 //        String defs = r.getDefs();
 //        String file = r.getFile();
