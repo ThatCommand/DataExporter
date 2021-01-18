@@ -1,7 +1,6 @@
 # Data Exporter
-Some (maybe) useful libraries 
 
-***Sorry for the misspells and syntax errors - I'm not English. Hope that makes sense***
+**Use at your own risk.**
 
 *NAME         --   Added on(dd/MM/yyyy)*
 
